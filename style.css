@@ -1,0 +1,158 @@
+:root {
+    --gold: #ffcf4b;
+    --kaspi: #f14635;
+    --bg: #0a0a0c;
+    --card: rgba(22, 22, 24, 0.9);
+    --border: #2a2a2c;
+}
+
+body {
+    background: var(--bg);
+    color: white;
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+    padding: clamp(10px, 3vw, 20px);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    overflow-x: hidden;
+}
+
+/* ФОН СО ЗВЕЗДАМИ */
+.stars {
+    position: fixed;
+    top: 0; left: 0; width: 200%; height: 200%;
+    background: 
+        radial-gradient(1px 1px at 25% 35%, white 100%, transparent),
+        radial-gradient(2px 2px at 70% 60%, var(--gold) 100%, transparent);
+    background-size: 50% 50%;
+    animation: move-stars 100s linear infinite;
+    z-index: -1;
+    opacity: 0.3;
+}
+
+@keyframes move-stars {
+    from { transform: translate(0, 0); }
+    to { transform: translate(-50%, -50%); }
+}
+
+.main-wrapper { max-width: 1200px; width: 100%; }
+
+header h1 {
+    font-size: clamp(28px, 7vw, 54px);
+    font-weight: 900;
+    text-align: center;
+    background: linear-gradient(to bottom, #fff 30%, var(--gold) 100%);
+    -webkit-background-clip: text;
+    background-clip: text; 
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    filter: drop-shadow(0 0 15px rgba(255, 207, 75, 0.4));
+    text-transform: uppercase;
+    margin: 0;
+}
+
+.subtitle { color: #888; text-align: center; font-size: 12px; letter-spacing: 2px; margin: 10px 0 30px; }
+
+/* ГИБКАЯ СЕТКА (Адаптация) */
+.content-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* По умолчанию для мобилок */
+    gap: 20px;
+}
+
+/* Для средних экранов (Планшеты) */
+@media (min-width: 768px) and (max-width: 1099px) {
+    .content-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    .seats-container-wrapper {
+        grid-column: span 2; /* Сетка номеров на всю ширину сверху */
+    }
+}
+
+/* Для больших экранов (ПК) */
+@media (min-width: 1100px) {
+    .content-grid {
+        grid-template-columns: 1.2fr 0.9fr 0.9fr;
+        align-items: start;
+    }
+}
+
+.seats-container-wrapper, .form-card, .owner-card {
+    background: var(--card);
+    padding: clamp(15px, 3vw, 25px);
+    border-radius: 30px;
+    border: 1px solid var(--border);
+    backdrop-filter: blur(10px);
+}
+
+.seats-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+}
+
+@media (min-width: 480px) { .seats-grid { grid-template-columns: repeat(8, 1fr); } }
+@media (min-width: 1100px) { .seats-grid { grid-template-columns: repeat(10, 1fr); } }
+
+.seat {
+    aspect-ratio: 1;
+    background: #222;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    border: 1px solid #333;
+    color: #666;
+    transition: 0.2s ease;
+}
+
+.seat.selected {
+    background: var(--gold);
+    color: black;
+    box-shadow: 0 0 15px var(--gold);
+    transform: scale(1.1);
+    border-color: var(--gold);
+}
+
+.stats { display: flex; justify-content: space-between; margin-bottom: 20px; }
+.stats-item b { font-size: 22px; color: var(--gold); }
+.stats-item span { font-size: 10px; color: #888; text-transform: uppercase; display: block; }
+
+input {
+    width: 100%;
+    padding: 16px;
+    background: #000;
+    border: 1px solid #333;
+    border-radius: 15px;
+    color: white;
+    margin-bottom: 12px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+.pay-btn {
+    width: 100%;
+    padding: 20px;
+    background: var(--kaspi);
+    color: white;
+    border: none;
+    border-radius: 18px;
+    font-weight: 900;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: 0.3s;
+}
+
+.pay-btn:hover { filter: brightness(1.2); transform: translateY(-2px); }
+
+/* КАРТОЧКА ОРГАНИЗАТОРА */
+.owner-card h3 { color: var(--gold); margin: 0 0 15px; text-transform: uppercase; font-size: 16px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+.label { font-size: 10px; color: #888; display: block; margin-top: 15px; }
+.owner-name, .owner-phone { font-size: 18px; font-weight: bold; margin: 5px 0; }
+.owner-phone { color: var(--gold); }
+.instruction { font-size: 12px; color: #666; margin-top: 20px; border-top: 1px solid #333; padding-top: 15px; line-height: 1.6; }

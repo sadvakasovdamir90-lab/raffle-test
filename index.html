@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mega Draw 50 | Official Raffle</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="stars"></div>
+
+    <div class="main-wrapper">
+        <header>
+            <h1>Mega Draw 50</h1>
+            <p class="subtitle">ВЫБЕРИТЕ СВОИ СЧАСТЛИВЫЕ НОМЕРА</p>
+        </header>
+
+        <div class="content-grid">
+            <div class="seats-container-wrapper">
+                <div class="seats-grid" id="seats-container"></div>
+            </div>
+
+            <div class="form-card">
+                <div class="stats">
+                    <div class="stats-item">
+                        <span>Выбрано</span>
+                        <b id="count">0</b>
+                    </div>
+                    <div class="stats-item" style="text-align: right;">
+                        <span>К оплате</span>
+                        <b id="total">0 ₸</b>
+                    </div>
+                </div>
+                <input type="text" id="name" placeholder="Ваше полное имя">
+                <input type="text" id="phone" placeholder="Ваш WhatsApp номер">
+                <button class="pay-btn" onclick="handlePayment()">ОПЛАТИТЬ KASPI 💳</button>
+            </div>
+
+            <div class="owner-card">
+                <h3>Организатор</h3>
+                <div class="owner-info">
+                    <span class="label">Получатель:</span>
+                    <p class="owner-name">Дамир А.</p> <span class="label">Номер для перевода:</span>
+                    <p class="owner-phone">77071234567</p> </div>
+                <div class="instruction">
+                    <p>1. Выберите номера</p>
+                    <p>2. Нажмите оплатить</p>
+                    <p>3. Сделайте перевод в Kaspi</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
