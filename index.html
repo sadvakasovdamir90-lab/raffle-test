@@ -51,7 +51,44 @@
         </div>
     </div>
 
+    <header>
+    <h1>Mega Draw 50</h1>
+    <p class="subtitle">БАҚЫТТЫ НӨМІРІҢІЗДІ ТАҢДАҢЫЗ / ВЫБЕРИТЕ СЧАСТЛИВЫЙ НОМЕР</p>
+</header>
+
+<div class="content-grid">
+    <div class="seats-container-wrapper">
+        <div class="seats-grid" id="seats-container"></div>
+    </div>
+
+    <div class="form-card">
+        <div class="stats">
+            <div class="stats-item">
+                <span>Таңдалды / Выбрано</span>
+                <b id="count">0</b>
+            </div>
+            <div class="stats-item" style="text-align: right;">
+                <span>Төлем / К оплате</span>
+                <b id="total">0 ₸</b>
+            </div>
+        </div>
+        <input type="text" id="name" placeholder="Аты-жөніңіз / Ваше имя">
+        <input type="text" id="phone" placeholder="WhatsApp нөміріңіз">
+        <button class="pay-btn" onclick="handlePayment()">ТӨЛЕУ / ОПЛАТИТЬ KASPI 💳</button>
+    </div>
+
+    <div class="owner-card">
+        <h3>Ұйымдастырушы / Организатор</h3>
+        <div class="owner-info">
+            <span class="label">Алушы / Получатель:</span>
+            <p class="owner-name">Дамир С.</p> 
+            <span class="label">Төлем нөмірі / Номер перевода:</span>
+            <p class="owner-phone">77071234567</p> </div>
+    </div>
+</div>
+
     <script src="script.js"></script>
 </body>
 
 </html>
+
