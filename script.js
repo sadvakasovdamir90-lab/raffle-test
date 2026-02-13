@@ -1,7 +1,7 @@
-const MY_KASPI_PHONE = "77071234567"; // ЗАМЕНИ НА СВОЙ НОМЕР БЕЗ + И 8
+const MY_KASPI_PHONE = "+7 771 273 0203"; // ЗАМЕНИ НА СВОЙ НОМЕР БЕЗ + И 8
 const BOT_TOKEN = "8227898201:AAGM9cL4CXrKPEbFxMSx-HCW0Zl-5WKv8-E";
-const MY_CHAT_ID = "7617006228";
-const PRICE = 1000;
+const MY_CHAT_ID = "+7 771 273 0203";
+const PRICE = 5000;
 
 let selected = new Set();
 const grid = document.getElementById('seats-container');
@@ -51,4 +51,5 @@ async function handlePayment() {
     } catch (e) {
         alert("Ошибка сети!");
     }
+
 }
