@@ -51,9 +51,6 @@ async function handlePayment() {
     } catch (e) {
         alert("Ошибка сети!");
     }
-
-    // handlePayment функциясының ішіндегі msg айнымалысын осылай өзгерт:
-const msg = `🎰 ЖАҢА ҚАТЫСУШЫ / НОВЫЙ УЧАСТНИК\n👤 Аты/Имя: ${name}\n📞 Тел: ${phone}\n🎫 Нөмірлер/Номера: ${nums}\n💰 Сумма: ${selected.size * PRICE} ₸`;
-
 }
+
 
