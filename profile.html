@@ -1,0 +1,1780 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <title>Личный кабинет | QulanShop</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        @media (max-width: 768px) {
+            .mobile-scroll { display: flex; overflow-x: auto; white-space: nowrap; gap: 8px; -webkit-overflow-scrolling: touch; }
+            .mobile-scroll::-webkit-scrollbar { display: none; }
+            .nav-btn { flex: 0 0 auto; width: auto !important; }
+        }
+        #ai-chat-window:not(.hidden) { display: flex !important; flex-direction: column; }
+        .readonly-input { background-color: #f3f4f6; color: #6b7280; cursor: not-allowed; }
+
+/* Дизайн эффектілері */
+    .glass-effect { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); }
+    .card-orange { background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); }
+    .card-black { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+    .card-purple { background: linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%); }
+    .card-green { background: linear-gradient(135deg, #10b981 0%, #047857 100%); }
+    
+    /* Профильдегі кіші карта стилі */
+    .cert-card-mini {
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .cert-card-mini:hover { transform: translateY(-5px) scale(1.02); }
+
+
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+
+<header class="bg-white shadow-sm py-4 mb-4 md:mb-6 relative z-[1000]">
+    <div class="container mx-auto px-4 flex justify-between items-center">
+        <!-- Логотип -->
+        <div class="shrink-0">
+            <h1 class="text-xl font-bold text-orange-600 cursor-pointer p-2 -m-2" 
+                onclick="window.location.assign('index.html')">
+                QulanShop
+            </h1>
+        </div>
+
+        <!-- Аты-жөні -->
+        <div class="flex-1 flex justify-end px-2 min-w-0 items-center">
+            <span id="user-fullname-header" class="text-[11px] sm:text-xs md:text-sm font-bold text-gray-800 leading-tight text-right whitespace-nowrap italic">
+                Загрузка...
+            </span>
+        </div>
+
+        <!-- ШЫҒУ БАТЫРМАСЫ (ЕСІК) -->
+        <div class="shrink-0 ml-4">
+            <button onclick="handleLogout()" 
+                    class="text-gray-400 hover:text-red-500 transition-all p-3 -mr-3 flex items-center justify-center outline-none active:scale-90"
+                    title="Выйти">
+                <i class="fas fa-sign-out-alt text-lg md:text-xl font-black"></i>
+            </button>
+        </div>
+    </div>
+</header>
+
+    <main class="container mx-auto px-2 md:px-4 pb-20">
+        <div class="flex flex-col md:flex-row gap-4 md:gap-6">
+            
+    <aside class="w-full md:w-1/4 space-y-2">
+    <div class="bg-white rounded-xl shadow-sm p-3 md:p-4 border border-gray-100">
+        <h3 class="text-gray-400 text-[9px] md:text-[10px] font-bold uppercase mb-3 px-3 italic tracking-wider">Личные данные</h3>
+        
+        <nav class="mobile-scroll md:space-y-1 flex md:block pb-2 md:pb-0">
+    <!-- ЖАҢА: МОЙ КОШЕЛЕК (Басымдық беру үшін ең басына қойдым) -->
+    <button onclick="showTab(event, 'tab-wallet')" class="nav-btn flex justify-between items-center whitespace-nowrap w-auto md:w-full text-left px-4 py-2 rounded-lg hover:bg-orange-100 transition text-xs md:text-sm border border-orange-200">
+        <span class="flex items-center">
+            <i class="fas fa-wallet mr-2 text-orange-600"></i> Мой кошелек
+        </span>
+        <!-- Баланс осы жерде көрініп тұрады -->
+        <span id="nav-balance" class="bg-orange-600 text-white text-[10px] px-2 py-0.5 rounded-full ml-2 font-black">0 ₸</span>
+    </button>
+
+    <button onclick="showTab(event, 'tab-profile')" class="nav-btn whitespace-nowrap w-auto md:w-full text-left px-4 py-2 rounded-lg bg-orange-50 text-orange-600 font-bold transition text-xs md:text-sm">Редактор профиля</button>
+    <button onclick="showTab(event, 'tab-orders')" class="nav-btn whitespace-nowrap w-auto md:w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100 transition text-xs md:text-sm">Мои заказы</button>
+    <button onclick="showTab(event, 'tab-coupons')" class="nav-btn whitespace-nowrap w-auto md:w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100 transition text-xs md:text-sm">Купоны</button>
+    
+    <button onclick="showTab(event, 'tab-cart')" class="nav-btn flex justify-between items-center whitespace-nowrap w-auto md:w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100 transition text-xs md:text-sm">
+        Корзина <span id="badge-cart" class="hidden bg-red-500 text-white text-[9px] px-1.5 py-0.5 rounded-full ml-2">0</span>
+    </button>
+    
+    <button onclick="showTab(event, 'tab-reviews')" class="nav-btn whitespace-nowrap w-auto md:w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100 transition text-xs md:text-sm ">Ваш отзывы</button>
+    <button onclick="showTab(event, 'tab-debt')" class="nav-btn whitespace-nowrap w-auto md:w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100 transition text-xs md:text-sm ">Список желаний</button> 
+    
+    <button onclick="showTab(event, 'tab-wishlist')" class="nav-btn flex justify-between items-center whitespace-nowrap w-auto md:w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100 transition text-xs md:text-sm ">
+        Должник <span id="badge-debt" class="hidden bg-red-600 text-white text-[9px] px-1.5 py-0.5 rounded-full ml-2 animate-pulse font-black italic">NEW</span>
+    </button>
+    
+    <button onclick="showTab(event, 'tab-certificates')" class="nav-btn flex justify-between items-center whitespace-nowrap w-auto md:w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100 transition text-xs md:text-sm">
+        Мои сертификаты <span id="badge-cert" class="hidden bg-orange-500 text-white text-[9px] px-1.5 py-0.5 rounded-full ml-2 font-black italic">NEW</span>
+    </button>
+</nav>
+
+        <h3 class="text-gray-400 text-[9px] md:text-[10px] font-bold uppercase mt-4 mb-3 px-3 italic tracking-wider border-t md:border-none pt-3 md:pt-0">Безопасность</h3>
+        <nav class="mobile-scroll md:space-y-1 flex md:block pb-2 md:pb-0">
+            <button onclick="showTab(event, 'tab-password')" class="nav-btn whitespace-nowrap w-auto md:w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100 transition text-xs md:text-sm">Изменить пароль</button>
+            <button onclick="showTab(event, 'tab-2fa')" class="nav-btn whitespace-nowrap w-auto md:w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100 transition text-xs md:text-sm">Защита 2FA</button>
+        </nav>
+
+        <!-- Жаңа: Поддержка және Көмек блогы -->
+<h3 class="text-gray-400 text-[9px] md:text-[10px] font-bold uppercase mt-6 mb-3 px-3 italic tracking-wider border-t md:border-none pt-3 md:pt-0">Поддержка</h3>
+<nav class="mobile-scroll md:space-y-1 flex md:block pb-2 md:pb-0">
+    <button onclick="showTab(event, 'tab-support')" class="nav-btn flex justify-between items-center whitespace-nowrap w-auto md:w-full text-left px-4 py-2 rounded-lg hover:bg-orange-50 transition text-xs md:text-sm group">
+        <span class="flex items-center">
+            <i class="fas fa-headset mr-2 text-gray-400 group-hover:text-orange-600 transition"></i> Центр помощи
+        </span>
+        <span class="hidden md:inline bg-gray-100 text-[9px] px-1.5 py-0.5 rounded uppercase font-black text-gray-400">24/7</span>
+    </button>
+    
+    <button onclick="window.open('https://wa.me/77000000000')" class="nav-btn flex items-center whitespace-nowrap w-auto md:w-full text-left px-4 py-2 rounded-lg hover:bg-green-50 transition text-xs md:text-sm group">
+        <i class="fab fa-whatsapp mr-2 text-gray-400 group-hover:text-green-500 transition"></i> Написать менеджеру
+    </button>
+    
+    <button onclick="showTab(event, 'tab-faq')" class="nav-btn flex items-center whitespace-nowrap w-auto md:w-full text-left px-4 py-2 rounded-lg hover:bg-blue-50 transition text-xs md:text-sm group">
+        <i class="fas fa-question-circle mr-2 text-gray-400 group-hover:text-blue-500 transition"></i> Частые вопросы (FAQ)
+    </button>
+</nav>
+        
+    </div>
+</aside>
+
+            <section class="w-full md:w-3/4">
+
+                <!-- ТАБ: ЦЕНТР ПОМОЩИ -->
+<div id="tab-support" class="tab-content hidden animate-card">
+    <div class="mb-8">
+        <h2 class="text-2xl font-black uppercase tracking-tighter text-gray-900">Центр поддержки <span class="text-orange-600">Qulan</span></h2>
+        <p class="text-[10px] font-bold text-gray-400 uppercase mt-1">Мы работаем для вас 24/7</p>
+    </div>
+
+ <!-- Жұмыс уақыты блогы -->
+<div class="mt-6 bg-white border border-gray-100 p-8 rounded-[2.5rem] shadow-[0_10px_30px_-15px_rgba(0,0,0,0.03)] relative overflow-hidden">
+    
+    <!-- Декор үшін фондық элемент (сәл ғана көрінетін қызғылт сары шеңбер) -->
+    <div class="absolute -top-10 -right-10 w-32 h-32 bg-orange-50 rounded-full opacity-50"></div>
+
+    <div class="relative z-10">
+        <!-- Тақырыбы -->
+        <div class="flex items-center gap-4 mb-8">
+            <div class="w-12 h-12 bg-orange-50 rounded-2xl flex items-center justify-center text-orange-600 shadow-sm border border-orange-100/50">
+                <i class="fas fa-clock text-xl"></i>
+            </div>
+            <div>
+                <h4 class="font-black uppercase text-[12px] text-gray-900 tracking-tighter leading-none">График работы</h4>
+                <p class="text-[9px] font-bold text-gray-400 uppercase mt-1">Время обработки заказов</p>
+            </div>
+        </div>
+
+        <!-- Уақыт көрсеткіштері -->
+        <div class="space-y-4">
+            <!-- Онлайн Менеджерлер -->
+            <div class="flex items-center justify-between p-4 bg-gray-50/50 rounded-2xl border border-gray-100/50 group hover:bg-white hover:shadow-md transition-all duration-300">
+                <div class="flex items-center gap-3">
+                    <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.5)]"></div>
+                    <span class="text-[10px] font-black uppercase text-gray-500 tracking-wide">Онлайн менеджеры</span>
+                </div>
+                <span class="text-[10px] font-black uppercase text-green-600 bg-green-50 px-3 py-1 rounded-full">Круглосуточно</span>
+            </div>
+
+            <!-- Склад және Доставка -->
+            <div class="flex items-center justify-between p-4 bg-gray-50/50 rounded-2xl border border-gray-100/50 group hover:bg-white hover:shadow-md transition-all duration-300">
+                <div class="flex items-center gap-3 text-gray-400 group-hover:text-orange-600 transition-colors">
+                    <i class="fas fa-truck text-[10px]"></i>
+                    <span class="text-[10px] font-black uppercase tracking-wide">Склад и доставка</span>
+                </div>
+                <!-- Осылай өзгертсең, JS оның ішіндегі жазуды "ОТКРЫТО" деп ауыстыра алады -->
+                <span class="text-[10px] font-black uppercase text-gray-900 tracking-widest transition-all duration-500">09:00 — 21:00</span>
+            </div>
+        </div>
+
+        <!-- Кішігірім ескерту -->
+        <div class="mt-6 flex items-start gap-2 px-2">
+            <i class="fas fa-info-circle text-gray-300 text-[10px] mt-0.5"></i>
+            <p class="text-[9px] font-bold text-gray-400 uppercase leading-relaxed">Заказы, оформленные после 21:00, обрабатываются на следующее утро.</p>
+        </div>
+    </div>
+</div>
+
+<!-- ФОРМА: ОСТАВИТЬ ЗАЯВКУ -->
+<div class="mt-8 bg-white border border-gray-100 p-5 sm:p-8 rounded-[2.5rem] shadow-sm">
+    <div class="mb-8">
+        <h4 class="font-black uppercase text-[13px] text-gray-900 tracking-tight">Оставить заявку</h4>
+        <p class="text-[10px] font-bold text-gray-400 uppercase mt-1">Опишите проблему, и мы свяжемся с вами</p>
+    </div>
+
+    <form id="support-form" class="space-y-4">
+        <!-- Аты және Контакт (Мобилкада 1 колонка, компьютерде 2) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input type="text" id="sup-name" required placeholder="Ваше имя" 
+                class="w-full bg-gray-50 border-none rounded-2xl p-4 text-[11px] font-black uppercase placeholder:text-gray-300 focus:ring-2 focus:ring-orange-600/10 transition-all outline-none">
+            
+            <input type="text" id="sup-contact" required placeholder="Email или Телефон" 
+                class="w-full bg-gray-50 border-none rounded-2xl p-4 text-[11px] font-black uppercase placeholder:text-gray-300 focus:ring-2 focus:ring-orange-600/10 transition-all outline-none">
+        </div>
+
+        <!-- Хабарлама жазу -->
+        <textarea id="sup-message" required rows="4" placeholder="Опишите ваш вопрос..." 
+            class="w-full bg-gray-50 border-none rounded-[2rem] p-5 text-[11px] font-black uppercase placeholder:text-gray-300 focus:ring-2 focus:ring-orange-600/10 transition-all resize-none outline-none"></textarea>
+
+        <!-- Файл тіркеу -->
+        <div class="relative group">
+            <input type="file" id="support-file" class="hidden">
+            <label for="support-file" class="flex items-center justify-center gap-3 w-full border-2 border-dashed border-gray-100 py-6 rounded-[2rem] cursor-pointer group-hover:border-orange-200 group-hover:bg-orange-50 transition-all">
+                <i class="fas fa-paperclip text-gray-300 group-hover:text-orange-600 transition-colors"></i>
+                <span id="file-name" class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Прикрепить скриншот</span>
+            </label>
+        </div>
+
+        <!-- Жіберу батырмасы -->
+        <button type="submit" id="submit-btn" class="w-full bg-gray-950 text-white py-5 rounded-[2rem] text-[11px] font-black uppercase tracking-[0.2em] hover:bg-orange-600 transition-all active:scale-95 shadow-xl shadow-gray-100 flex items-center justify-center gap-3 group">
+            <span>Отправить заявку</span>
+            <i class="fas fa-paper-plane text-[10px] group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"></i>
+        </button>
+    </form>
+</div>
+</div>
+
+<!-- ТАБ: FAQ (Жиі қойылатын сұрақтар) -->
+<div id="tab-faq" class="tab-content hidden animate-card">
+    <div class="mb-8">
+        <h2 class="text-2xl font-black uppercase tracking-tighter text-gray-900">Частые вопросы</h2>
+        <p class="text-[10px] font-bold text-gray-400 uppercase mt-1">Ответы на популярные запросы</p>
+    </div>
+
+    <div class="space-y-3">
+        <!-- Сұрақ 1 -->
+        <details class="group bg-white border border-gray-100 rounded-3xl overflow-hidden transition-all hover:border-orange-200">
+            <summary class="list-none p-5 flex justify-between items-center cursor-pointer font-black uppercase text-[10px] tracking-widest select-none text-gray-900">
+                Как отменить заказ?
+                <i class="fas fa-chevron-down text-[8px] transition-transform group-open:rotate-180"></i>
+            </summary>
+            <div class="px-5 pb-5 text-[11px] font-bold text-gray-500 leading-relaxed border-t border-gray-50 pt-4 uppercase">
+                Заказ можно отменить в течение 30 минут после оформления в разделе "Мои заказы". Если время прошло, свяжитесь с менеджером.
+            </div>
+        </details>
+
+        <!-- Сұрақ 2 -->
+        <details class="group bg-white border border-gray-100 rounded-3xl overflow-hidden transition-all hover:border-orange-200">
+            <summary class="list-none p-5 flex justify-between items-center cursor-pointer font-black uppercase text-[10px] tracking-widest select-none text-gray-900">
+                Как работает возврат?
+                <i class="fas fa-chevron-down text-[8px] transition-transform group-open:rotate-180"></i>
+            </summary>
+            <div class="px-5 pb-5 text-[11px] font-bold text-gray-500 leading-relaxed border-t border-gray-50 pt-4 uppercase">
+                Возврат товара возможен в течение 14 дней при сохранении товарного вида и упаковки. Деньги вернутся на ваш кошелек или карту.
+            </div>
+        </details>
+
+        <!-- Сұрақ 3 -->
+        <details class="group bg-white border border-gray-100 rounded-3xl overflow-hidden transition-all hover:border-orange-200">
+            <summary class="list-none p-5 flex justify-between items-center cursor-pointer font-black uppercase text-[10px] tracking-widest select-none text-gray-900">
+                Где мой товар?
+                <i class="fas fa-chevron-down text-[8px] transition-transform group-open:rotate-180"></i>
+            </summary>
+            <div class="px-5 pb-5 text-[11px] font-bold text-gray-500 leading-relaxed border-t border-gray-50 pt-4 uppercase">
+                Статус доставки можно отследить в реальном времени в разделе "Мои заказы". Мы отправим уведомление, когда курьер будет в пути.
+            </div>
+        </details>
+    </div>
+</div>
+                
+        <div id="tab-profile" class="tab-content bg-white rounded-xl shadow-sm p-4 md:p-6 border border-gray-100">
+    <h2 class="text-lg md:text-xl font-bold mb-6 italic">Редактор профиля</h2>
+
+    <div class="flex flex-col items-center mb-8">
+    <div class="relative group">
+        <div class="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-white shadow-lg overflow-hidden bg-gray-100 flex items-center justify-center">
+            <img id="user-avatar" src="https://ui-avatars.com/api/?name=User&background=random" class="w-full h-full object-cover">
+        </div>
+        <label for="avatar-upload" class="absolute bottom-0 right-0 bg-orange-600 text-white p-2 rounded-full shadow-lg cursor-pointer hover:bg-orange-700 transition-all">
+            <i class="fas fa-camera text-sm"></i>
+            <input type="file" id="avatar-upload" class="hidden" accept="image/*" onchange="uploadAvatar(this)">
+        </label>
+    </div>
+    <p class="text-[10px] text-gray-400 mt-2 font-bold uppercase tracking-widest italic">Фото профиля</p>
+</div> 
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="md:col-span-2">
+        <label class="block text-xs text-gray-400 mb-1 font-bold italic">ФИО</label>
+        <input type="text" id="user-fullname-input" readonly
+               class="w-full p-3 border rounded-lg outline-none readonly-input text-sm font-semibold mb-2">
+        <div class="flex items-start gap-2 text-[11px] text-gray-500 bg-gray-50 p-3 rounded-lg border border-dashed border-gray-200">
+            <i class="fas fa-info-circle text-orange-500 mt-0.5"></i>
+            <p>После регистрации ФИО изменить невозможно. <a href="tel:+77054860793" class="text-orange-600 font-bold hover:underline">обратитесь в тех.поддержку</a>.</p>
+        </div>
+    </div>
+
+    <div class="mt-2">
+        <label class="block text-xs text-gray-400 mb-1 font-bold italic">Номер телефона</label>
+        <input type="text" id="user-phone-input" placeholder="+7 (705) 000-00-00" disabled
+               class="w-full p-3 border rounded-lg outline-none focus:border-orange-500 text-sm font-semibold disabled:bg-gray-50 disabled:text-gray-400 transition-all">
+    </div>
+
+    <div class="mt-2">
+        <label class="block text-xs text-gray-400 mb-1 font-bold italic">Email почта</label>
+        <input type="email" id="user-email-input" placeholder="example@mail.com" disabled
+               class="w-full p-3 border rounded-lg outline-none focus:border-orange-500 text-sm font-semibold disabled:bg-gray-50 disabled:text-gray-400 transition-all">
+    </div>
+
+    <div class="md:col-span-2 mt-2">
+        <label class="block text-xs text-gray-400 mb-1 font-bold italic">Адрес проживания</label>
+        <div class="relative">
+            <span class="absolute left-3 top-3 text-gray-400"><i class="fas fa-map-marker-alt"></i></span>
+            <input type="text" id="user-address-input" placeholder="Село Кулан, ул. Жибек Жолы, дом 7" disabled
+                   class="w-full p-3 pl-10 border rounded-lg outline-none focus:border-orange-500 text-sm font-semibold text-gray-700 disabled:bg-gray-50 disabled:text-gray-400 transition-all">
+        </div>
+    </div>
+</div>
+
+<button id="edit-profile-btn" onclick="toggleEditMode()" 
+        class="mt-8 bg-orange-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-orange-700 transition w-full md:w-auto shadow-lg shadow-orange-200">
+    Изменить данные
+</button>
+</div>
+
+<!-- ТАБ: МОЙ КОШЕЛЕК (Premium Stealth Design) -->
+<div id="tab-wallet" class="tab-content hidden animate-in fade-in duration-500 px-4 md:px-0 pb-20">
+    
+    <!-- Header: Кәсіби және таза -->
+    <div class="flex items-center justify-between mb-10 mt-6">
+        <div>
+            <h2 class="text-3xl font-black uppercase tracking-tighter text-gray-950 leading-none">
+                Мой <span class="text-orange-600">кошелек</span>
+            </h2>
+            <div class="flex items-center gap-2 mt-3">
+                <div class="w-2 h-2 bg-green-500 rounded-full shadow-[0_0_10px_rgba(34,197,94,0.4)]"></div>
+                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">Система защиты Q-Shield активна</p>
+            </div>
+        </div>
+        <div class="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center border border-gray-100 text-gray-400 shadow-sm">
+            <i class="fas fa-fingerprint text-xl"></i>
+        </div>
+    </div>
+
+    <!-- Негізгі Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        
+        <!-- КАРТОЧКА БАЛАНСА (Deep Carbon Card) -->
+        <div class="relative overflow-hidden bg-gradient-to-br from-[#1a1a1a] to-[#0a0a0a] p-10 rounded-[3rem] text-white shadow-2xl border border-white/10 flex flex-col justify-between min-h-[280px]">
+            
+            <!-- Сәндік фондық жарық (Градиент) -->
+            <div class="absolute -top-24 -right-24 w-80 h-80 bg-orange-600/10 rounded-full blur-[100px]"></div>
+            
+            <div class="relative z-10">
+                <div class="flex justify-between items-start mb-12">
+                    <div>
+                        <p class="text-gray-500 text-[10px] font-black uppercase tracking-[0.3em] mb-4 text-left">Доступный остаток</p>
+                        <div class="flex items-baseline gap-4">
+                            <h3 id="wallet-balance-main" class="text-6xl font-black tracking-tighter leading-none">0</h3>
+                            <span class="text-2xl font-bold text-orange-500 uppercase tracking-widest">kzt</span>
+                        </div>
+                    </div>
+                    <!-- Card Chip / Icon -->
+                    <div class="w-14 h-14 bg-white/5 backdrop-blur-3xl rounded-2xl border border-white/10 flex items-center justify-center shadow-inner">
+                        <i class="fas fa-wallet text-orange-500 text-2xl"></i>
+                    </div>
+                </div>
+                
+                <div class="flex items-center gap-8">
+                    <div class="flex flex-col">
+                        <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-2 text-left">Накоплено Q-Coins</p>
+                        <div class="flex items-center gap-2 bg-white/5 py-2 px-4 rounded-xl border border-white/5">
+                            <i class="fas fa-coins text-yellow-500 text-xs"></i>
+                            <span id="wallet-bonuses" class="text-sm font-black tracking-tight text-white">0.00</span>
+                        </div>
+                    </div>
+                    <div class="flex flex-col border-l border-white/10 pl-8">
+                        <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-2 text-left">Статус счета</p>
+                        <span class="text-[10px] font-black text-white uppercase tracking-[0.2em] flex items-center gap-2">
+                            <i class="fas fa-check-circle text-blue-400"></i> Верифицирован
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ФОРМА ПОПОЛНЕНИЯ (Clean Executive) -->
+        <div class="bg-white p-10 rounded-[3rem] border border-gray-100 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.05)] flex flex-col justify-center">
+            <h4 class="text-[10px] font-black text-gray-400 uppercase mb-10 tracking-[0.3em] flex items-center">
+                <span class="w-8 h-[2px] bg-orange-500 mr-3"></span> Быстрое пополнение
+            </h4>
+            
+            <div class="space-y-8">
+                <div class="relative border-b-2 border-gray-100 focus-within:border-orange-600 transition-all duration-500 pb-4">
+                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Введите сумму зачисления</p>
+                    <div class="flex items-center">
+                        <span class="text-gray-300 font-black text-2xl mr-4 uppercase tracking-tighter">kzt</span>
+                        <input type="number" id="topup-amount" placeholder="0.00" 
+                               class="w-full bg-transparent outline-none font-black text-5xl placeholder:text-gray-100 tracking-tighter text-gray-950 border-none p-0 focus:ring-0">
+                    </div>
+                </div>
+                
+                <button onclick="showPayMethods()" 
+                        class="w-full bg-gray-950 text-white py-6 rounded-[1.5rem] font-black uppercase tracking-[0.3em] text-[11px] hover:bg-orange-600 active:scale-95 transition-all shadow-2xl shadow-gray-200 flex items-center justify-center gap-4 group">
+                    <span>Перейти к оплате</span>
+                    <i class="fas fa-arrow-right text-[10px] group-hover:translate-x-2 transition-transform"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ТӨЛЕМ ӘДІСТЕРІ (Modern Grid) -->
+    <div id="pay-methods" class="hidden mt-16 animate-in slide-in-from-bottom-10 duration-700 pb-10">
+        <div class="flex items-center gap-6 mb-10 px-2">
+            <h4 class="text-[11px] font-black text-gray-900 uppercase tracking-[0.3em] whitespace-nowrap italic-none">Выберите метод</h4>
+            <div class="h-[1px] w-full bg-gray-100"></div>
+        </div>
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <!-- Kaspi -->
+            <div onclick="processTopUp('kaspi')" 
+                 class="group cursor-pointer bg-white p-8 rounded-[2.5rem] border-2 border-transparent hover:border-red-500 hover:shadow-2xl hover:shadow-red-50 transition-all flex flex-col items-center">
+                <div class="w-16 h-16 bg-red-50 rounded-3xl flex items-center justify-center mb-5 group-hover:rotate-6 transition-transform duration-500">
+                    <img src="https://kaspi.kz/img/kaspi_logo.png" class="w-10 h-10 object-contain rounded-xl">
+                </div>
+                <p class="text-[10px] font-black uppercase text-gray-900 tracking-widest">Kaspi QR</p>
+            </div>
+
+            <!-- Card (Locked/Disabled Style) -->
+            <div class="group bg-gray-50/50 p-8 rounded-[2.5rem] border border-dashed border-gray-200 flex flex-col items-center opacity-40 cursor-not-allowed grayscale">
+                <div class="w-16 h-16 bg-white rounded-3xl flex items-center justify-center mb-5">
+                    <i class="fas fa-credit-card text-gray-300 text-2xl"></i>
+                </div>
+                <p class="text-[10px] font-black uppercase text-gray-400 tracking-widest">Карта</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ТРАНЗАКЦИЯЛАР (Executive History) -->
+    <div class="mt-16">
+        <div class="flex items-center justify-between mb-8 px-2">
+            <h4 class="text-[12px] font-black text-gray-900 uppercase tracking-[0.3em]">Последние операции</h4>
+            <span class="text-[9px] font-black text-gray-300 uppercase tracking-widest">Март 2026</span>
+        </div>
+        <div id="transaction-history" class="space-y-4">
+            <div class="flex flex-col items-center justify-center py-20 bg-gray-50/30 rounded-[3.5rem] border border-dashed border-gray-100">
+                <div class="w-20 h-20 bg-white rounded-[2rem] shadow-sm flex items-center justify-center mb-6">
+                    <i class="fas fa-folder-open text-gray-100 text-3xl"></i>
+                </div>
+                <p class="text-[10px] font-black text-gray-300 uppercase tracking-[0.4em] text-center leading-loose">История операций<br>пуста</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ТАБ: СЕРТИФИКАТТАР -->
+<div id="tab-certificates" class="tab-content hidden bg-white rounded-xl shadow-sm p-4 md:p-8 border border-gray-100">
+    <div class="flex items-center gap-3 md:gap-4 mb-6 md:mb-8">
+        <div class="bg-orange-100 p-3 md:p-4 rounded-xl md:rounded-2xl text-orange-600 shrink-0">
+            <i class="fas fa-gift text-xl md:text-2xl"></i>
+        </div>
+        <div>
+            <h2 class="text-lg md:text-2xl font-black italic text-gray-800 uppercase tracking-tight">Мои Сертификаты</h2>
+            <p class="text-[10px] md:text-xs text-gray-400 italic">Подарочные карты QulanShop</p>
+        </div>
+    </div>
+
+    <!-- grid-cols-1 мобильдіде бір қатар, md:grid-cols-2 планшет/компьютерде екі қатар -->
+    <div id="certificates-list" class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+        <!-- Сертификаттар осында JS арқылы шығады -->
+    </div>
+
+    <div id="no-certificates" class="hidden text-center py-16 md:py-20">
+        <div class="bg-gray-50 w-20 h-20 md:w-28 md:h-28 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-ticket-alt text-4xl md:text-6xl text-gray-200"></i>
+        </div>
+        <p class="text-gray-400 italic text-sm">У вас пока нет активных сертификатов</p>
+    </div>
+</div>
+
+<!-- СЕРТИФИКАТТЫ ҮЛКЕЙТІП КӨРСЕТУ МОДАЛЬКАСЫ -->
+<div id="cert-modal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-xl z-[5000] flex items-center justify-center p-4">
+    <div class="bg-white rounded-[2.5rem] max-w-lg w-full p-6 md:p-8 shadow-2xl relative animate-modal">
+        <button onclick="closeCertModal()" class="absolute top-6 right-6 text-gray-400 hover:text-black transition">
+            <i class="fas fa-times text-xl"></i>
+        </button>
+
+        <h2 class="text-xl font-black italic uppercase text-center mb-6">Ваш <span class="text-orange-600">подарок</span></h2>
+        
+        <!-- Карта осында шығады -->
+        <div id="cert-modal-content" class="mb-8"></div>
+
+        <div class="grid grid-cols-1 gap-3">
+            <button id="download-pdf-btn" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-black uppercase italic tracking-widest text-[10px] shadow-xl active:scale-95 transition flex items-center justify-center gap-3">
+                <i class="fas fa-file-pdf text-lg"></i> Скачать PDF чек
+            </button>
+            
+            <div class="flex gap-2">
+                <button id="share-wa-btn" class="flex-1 bg-green-500 text-white py-4 rounded-2xl font-black uppercase text-[10px] shadow-lg active:scale-95 transition flex items-center justify-center gap-2">
+                    <i class="fab fa-whatsapp text-lg"></i> WhatsApp
+                </button>
+                <button id="share-tg-btn" class="flex-1 bg-blue-500 text-white py-4 rounded-2xl font-black uppercase text-[10px] shadow-lg active:scale-95 transition flex items-center justify-center gap-2">
+                    <i class="fab fa-telegram-plane text-lg"></i> Telegram
+                </button>
+            </div>
+        </div>
+
+        <div id="cert-modal-content" class="mb-6"></div>
+<!-- Тілектерге арналған блок -->
+<div id="modal-wish-container" class="bg-gray-50 border-2 border-dashed border-gray-200 p-6 rounded-[2rem] mb-8 hidden">
+    <span class="text-[10px] font-black uppercase text-orange-600 block mb-2 tracking-widest italic">Пожелание:</span>
+    <p id="modal-wish-text" class="text-xl text-slate-700 leading-snug italic font-medium"></p>
+</div>
+
+    </div>
+</div>
+
+<style>
+
+
+/* Картаның стильдері (Скриншотта көрінбей тұрған блоктар үшін) */
+    .card-orange { background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); }
+    .card-black { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+    .card-purple { background: linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%); }
+    .card-green { background: linear-gradient(135deg, #10b981 0%, #047857 100%); }
+    
+    .cert-card {
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+    .cert-card:hover { transform: translateY(-5px) scale(1.02); }
+
+    /* Сертификат картасының базалық стилі */
+    .cert-card {
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        cursor: pointer;
+        min-height: 160px; /* Телефонда биіктігі тым кішірейіп кетпеуі үшін */
+        position: relative;
+        overflow: hidden;
+        -webkit-tap-highlight-color: transparent; /* Айфонда басқандағы көк фонды алу */
+    }
+
+    /* Ховер эффект тек компьютерде жұмыс істеуі үшін (Media query) */
+    @media (min-width: 1024px) {
+        .cert-card:hover {
+            transform: scale(1.05) rotate(1deg);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+    }
+
+    /* Мобильді телефондарға арналған арнайы стильдер (iPhone/Android) */
+    @media (max-width: 640px) {
+        .cert-card {
+            border-radius: 1.5rem !important; /* Жұмсақ бұрыштар */
+            padding: 1.25rem !important;
+            min-height: 140px;
+        }
+        
+        .cert-card h3 {
+            font-size: 1.5rem !important; /* Соманың көлемін кішірейту */
+        }
+
+        /* Телефонда басқанда сәл кішірею эффектісі (Active state) */
+        .cert-card:active {
+            transform: scale(0.96);
+            opacity: 0.9;
+        }
+    }
+
+    /* Сертификат ішіндегі суреттер мен иконкалардың PDF-те және экранда дұрыс тұруы */
+    .cert-card img {
+        pointer-events: none;
+        user-select: none;
+    }
+</style>
+
+                <div id="tab-orders" class="tab-content hidden bg-white rounded-xl shadow-sm p-10 md:p-20 text-center border border-gray-100">
+                    <i class="fas fa-box-open text-6xl text-gray-200 mb-6"></i>
+                    <h2 class="text-xl font-bold mb-2">Заказов нет</h2>
+                    <p class="text-gray-400 italic text-sm">Здесь будет список ваших покупок</p>
+                </div>
+
+                <div id="tab-coupons" class="tab-content hidden bg-white rounded-xl shadow-sm p-10 md:p-20 text-center border border-gray-100">
+                    <i class="fas fa-ticket-alt text-6xl text-gray-200 mb-6"></i>
+                    <h2 class="text-xl font-bold mb-2">Нет активных купонов</h2>
+                    <p class="text-gray-400 italic text-sm">Ваши скидки появятся здесь</p>
+                </div>
+
+               <div id="tab-cart" class="tab-content hidden bg-white rounded-xl shadow-sm p-4 md:p-8 border border-gray-100">
+    <h2 class="text-xl font-bold mb-6 italic border-l-4 border-orange-500 pl-3 uppercase">Моя корзина</h2>
+    
+    <div id="cart-items-list" class="space-y-4 mb-6"></div>
+
+    <div id="empty-cart-msg" class="text-center py-10">
+        <i class="fas fa-shopping-cart text-6xl text-gray-200 mb-6"></i>
+        <h2 class="text-xl font-bold mb-2">Ваша корзина пуста</h2>
+        <button type="button" onclick="location.href='index.html'" class="mt-4 bg-orange-600 text-white px-8 py-3 rounded-xl font-bold shadow-lg shadow-orange-100">В магазин</button>
+    </div>
+
+    <div id="cart-footer" class="hidden border-t pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div class="text-center md:text-left">
+            <p class="text-sm text-gray-400 font-bold uppercase italic">Итого к оплате:</p>
+            <h3 id="cart-total-price" class="text-3xl font-black text-orange-600 italic">0 ₸</h3>
+        </div>
+        <button type="button" class="w-full md:w-auto bg-orange-600 text-white px-10 py-4 rounded-2xl font-bold uppercase tracking-widest shadow-xl active:scale-95 transition">Оформить заказ</button>
+    </div>
+</div>
+                
+                <div id="tab-wishlist" class="tab-content hidden bg-white rounded-xl shadow-sm p-10 md:p-20 text-center border border-gray-100">
+                    <i class="fas fa-heart-broken text-6xl md:text-8xl text-gray-200 mb-6"></i>
+                    <h2 class="text-xl font-bold mb-2">У вас нет желаемых товаров</h2>
+                </div>
+
+                <div id="tab-reviews" class="tab-content hidden bg-white rounded-xl shadow-sm p-10 md:p-20 text-center border border-gray-100">
+                    <i class="fas fa-comment-slash text-6xl md:text-8xl text-gray-200 mb-6"></i>
+                    <h2 class="text-xl font-bold mb-2">У вас нет отзывов</h2>
+                </div>
+
+               <div id="tab-wishlist" class="tab-content hidden bg-white rounded-xl shadow-sm p-4 md:p-8 border border-gray-100">
+    <div class="flex items-center gap-4 mb-8">
+        <div class="bg-red-100 p-4 rounded-2xl text-red-600 shadow-sm">
+            <i class="fas fa-hand-holding-dollar text-2xl"></i>
+        </div>
+        <div>
+            <h2 class="text-2xl font-black italic text-gray-800 uppercase tracking-tight">Финансовый статус</h2>
+            <p class="text-xs text-gray-400 italic">Информация о ваших задолженностях</p>
+        </div>
+    </div>
+
+    <div class="max-w-2xl space-y-6">
+        <div id="debt-card" class="flex flex-col md:flex-row items-center justify-between p-6 rounded-[2rem] border transition-all duration-500 gap-6">
+            <div class="text-center md:text-left">
+                <h3 id="debt-amount" class="text-4xl md:text-5xl font-black mt-1 italic">0 ₸</h3>
+                <p id="debt-start-date" class="font-bold text-gray-700 italic">Нет задолженностей</p>
+                <p id="debt-warning-text" class="text-[11px] mt-2 font-bold italic uppercase"></p>
+            </div>
+            <button onclick="openPayment()" id="pay-button" class="w-full md:w-auto text-white px-10 py-4 rounded-2xl font-bold text-lg transition shadow-xl active:scale-95 uppercase tracking-wider">Погасить</button>
+        </div>
+
+        <div id="debt-details" class="hidden grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="flex items-center gap-4 p-5 bg-gray-50 rounded-2xl border border-gray-100">
+        <div class="bg-white p-3 rounded-xl text-orange-400"><i class="fas fa-hashtag"></i></div>
+        <div>
+            <p class="text-[10px] text-gray-400 font-bold uppercase">Номер заказа</p>
+            <p id="debt-order-number" class="font-bold text-gray-700 italic">#QS-774188</p>
+        </div>
+    </div>
+    <div class="flex items-center gap-4 p-5 bg-gray-50 rounded-2xl border border-gray-100">
+        <div class="bg-white p-3 rounded-xl text-orange-400"><i class="fas fa-calendar-day"></i></div>
+        <div>
+            <p class="text-[10px] text-gray-400 font-bold uppercase">Дата возникновения</p>
+            <p id="debt-start-date" class="font-bold text-gray-700 italic">--</p>
+        </div>
+    </div>
+</div>
+
+        <div id="restriction-notice" class="hidden flex gap-4 p-5 border-2 border-red-500 rounded-2xl bg-red-50 animate-pulse">
+            <i class="fas fa-ban text-2xl text-red-600"></i>
+            <div>
+                <p class="text-sm font-bold mb-1 italic text-red-700 uppercase">АККАУНТ ОГРАНИЧЕН</p>
+                <p class="text-xs text-red-600 leading-relaxed italic font-bold">Доступ к новым заказам временно ограничен из-за просрочки более 3 месяцев.</p>
+            </div>
+        </div>
+
+        <div class="flex gap-4 p-5 border border-dashed border-gray-200 rounded-2xl bg-gray-50/50">
+            <i class="fas fa-info-circle text-2xl text-orange-400"></i>
+            <div>
+                <p class="text-sm font-bold mb-1 italic text-gray-700 uppercase">Важное уведомление</p>
+                <p class="text-xs text-gray-500 leading-relaxed italic">При неоплате задолженности в указанный срок, доступ к созданию новых заказов будет временно ограничен.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="payment-modal" class="hidden fixed inset-0 bg-black/60 z-[200] flex items-center justify-center p-4 backdrop-blur-sm">
+    <div class="bg-white rounded-[2.5rem] max-w-md w-full p-8 shadow-2xl relative border border-orange-100">
+        <button onclick="closePayment(false)" class="absolute top-6 right-6 text-gray-400 hover:text-black transition-transform hover:rotate-0">
+            <i class="fas fa-times text-xl"></i>
+        </button>
+        <h2 class="text-2xl font-black italic text-orange-600 mb-6 uppercase text-center">Оплата задолженности</h2>
+        <div class="space-y-4 mb-8">
+            <div class="p-4 bg-orange-50 rounded-2xl border border-orange-100 text-center">
+                <p class="text-[10px] text-orange-400 font-bold uppercase mb-1">Получатель:</p>
+                <p class="font-bold text-gray-800 italic uppercase">ИП "QulanShop"</p>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <a href="https://kaspi.kz" target="_blank" class="flex flex-col items-center p-5 border-2 border-gray-50 rounded-3xl hover:border-red-500 transition-all hover:bg-red-50 group">
+                    <img src="images/kaspi.png" class="h-16 mb-2" alt="Kaspi">
+                    <span class="text-[12px] font-black text-red-600 uppercase">Kaspi Kz</span>
+                </a>
+                <a href="https://halykbank.kz" target="_blank" class="flex flex-col items-center p-5 border-2 border-gray-50 rounded-3xl hover:border-green-500 transition-all hover:bg-green-50 group">
+                    <img src="images/halyk.png" class="h-16 mb-2" alt="Halyk">
+                    <span class="text-[12px] font-black text-green-600 uppercase">Halyk Bank</span>
+                    
+                <a href="НАПРАВЛЕНИЯ ДОЛГА" target="_blank" class="flex flex-col items-center p-5 border-2 border-gray-50 rounded-3xl hover:border-red-500 transition-all hover:bg-red-50 group">
+                    <span class="text-[12px] font-black text-red-600 italic uppercase">НАЛИЧНЫЕ</span>
+                </a>
+
+                </a>
+            </div>
+        </div>
+        <p class="text-[11px] text-gray-400 text-center italic mb-6">После оплаты отправьте скриншот чека в чат поддержки. ИП зарегистрировано в с. Кулан.</p>
+        <button onclick="closePayment(true)" class="w-full bg-orange-600 text-white py-4 rounded-2xl font-bold hover:bg-orange-700 shadow-lg uppercase tracking-widest">Я оплатил(а)</button>
+    </div>
+</div>
+
+                <div id="tab-password" class="tab-content hidden bg-white rounded-xl shadow-sm p-4 md:p-6 border border-gray-100">
+                    <h2 class="text-xl font-bold mb-6 italic">Безопасность и пароль</h2>
+                    <div class="max-w-md space-y-5">
+                        <div>
+                            <label class="block text-xs text-gray-400 mb-1 font-bold italic">Текущий пароль</label>
+                            <div class="relative">
+                                <input type="password" id="current-password" placeholder="••••••••" class="w-full p-3 pr-10 border rounded-lg outline-none focus:border-orange-500 transition-all text-sm">
+                                <button onclick="togglePass('current-password', this)" class="absolute right-3 top-3 text-gray-400 hover:text-orange-600 transition"><i class="fas fa-eye"></i></button>
+                                <p id="error-msg" class="text-red-500 text-[11px] mt-1 hidden italic font-medium"><i class="fas fa-exclamation-circle"></i> Текущий пароль введён неверно</p>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-400 mb-1 font-bold italic">Новый пароль</label>
+                            <div class="relative">
+                                <input type="password" id="new-password" placeholder="Минимум 6 символов" class="w-full p-3 pr-10 border rounded-lg outline-none focus:border-orange-500 transition-all text-sm">
+                                <button onclick="togglePass('new-password', this)" class="absolute right-3 top-3 text-gray-400 hover:text-orange-600 transition"><i class="fas fa-eye"></i></button>
+                            </div>
+                        </div>
+                        <button onclick="changePassword()" class="w-full md:w-auto bg-orange-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-orange-700 transition shadow-lg shadow-orange-100">Обновить пароль</button>
+                        <p id="success-msg" class="text-green-600 text-sm hidden italic font-bold mt-3"><i class="fas fa-check-circle"></i> Пароль успешно изменен!</p>
+                    </div>
+                </div>
+
+                <div id="tab-2fa" class="tab-content hidden bg-white rounded-xl shadow-sm p-4 md:p-6 border border-gray-100">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="bg-orange-100 p-3 rounded-full text-orange-600"><i class="fas fa-shield-alt text-xl"></i></div>
+                        <h2 class="text-xl font-bold italic">Двухфакторная аутентификация (2FA)</h2>
+                    </div>
+                    <div class="max-w-xl">
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-2xl border border-gray-100 mb-6">
+                            <div>
+                                <p class="font-bold text-sm text-gray-800">Статус защиты</p>
+                                <p id="2fa-status-text" class="text-xs text-gray-500 italic">В настоящее время: Отключено</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="2fa-toggle" class="sr-only peer" onchange="toggle2FA()">
+                                <div class="w-14 h-7 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-orange-600"></div>
+                            </label>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="flex gap-4 p-4 border border-dashed border-gray-200 rounded-xl">
+                                <i class="fas fa-mobile-alt text-2xl text-gray-400"></i>
+                                <div>
+                                    <p class="text-sm font-bold mb-1 italic">Как это работает?</p>
+                                    <p class="text-xs text-gray-500 leading-relaxed">После включения этой функции для входа в учетную запись вам потребуется не только пароль, но и специальный SMS-код, который будет отправлен на ваш телефон.</p>
+                                </div>
+                            </div>
+                            <div id="2fa-info" class="hidden animate-pulse p-4 bg-green-50 border border-green-100 rounded-xl text-green-700 text-xs font-medium">
+                                <i class="fas fa-check-circle mr-1"></i> 2FA қорғанысы белсенді!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+        </div>
+    </main>
+
+    <div id="ai-chat-wrapper" class="fixed bottom-8 right-8 z-[100]">
+        <button onclick="toggleAIChat()" class="relative group">
+            <div class="absolute -inset-1 bg-orange-600 rounded-full blur opacity-30 group-hover:opacity-60 transition duration-1000 animate-pulse"></div>
+            <div class="relative bg-orange-600 text-white w-16 h-16 rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-transform duration-300">
+                <i class="fas fa-robot text-3xl"></i>
+            </div>
+        </button>
+        <div id="ai-chat-window" class="hidden absolute bottom-20 right-0 w-[350px] md:w-[400px] bg-white rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-gray-100 overflow-hidden flex flex-col">
+            <div class="bg-gradient-to-r from-orange-600 to-orange-500 p-5 text-white flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-white/20 p-2 rounded-lg"><i class="fas fa-robot text-2xl"></i></div>
+                    <div><p class="font-bold italic text-sm leading-none">Qulan AI Assistant</p><p class="text-[10px] text-orange-100 mt-1 italic">Онлайн</p></div>
+                </div>
+                <button onclick="toggleAIChat()"><i class="fas fa-times"></i></button>
+            </div>
+            <div id="chat-messages" class="h-96 overflow-y-auto p-5 space-y-4 bg-gray-50/50 text-sm italic">
+                <div class="flex justify-start"><div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 max-w-[85%] text-gray-700">Қайырлы күн! ✨ Мен **Qulan AI** көмекшісімін.</div></div>
+            </div>
+            <div class="p-4 bg-white border-t border-gray-100">
+                <div class="relative flex items-center">
+                    <input type="text" id="chat-input" class="w-full border-2 border-gray-100 rounded-2xl py-3 pl-4 pr-12 outline-none focus:border-orange-500 text-sm" placeholder="Сұрағыңызды жазыңыз...">
+                    <button onclick="sendMessage()" class="absolute right-2 bg-orange-600 text-white w-10 h-10 rounded-xl flex items-center justify-center"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+   <div id="custom-toast" class="fixed top-5 left-1/2 -translate-x-1/2 md:left-auto md:right-5 md:translate-x-0 z-[300] pointer-events-none opacity-0 transform -translate-y-10 transition-all duration-500 w-[90%] md:w-auto">
+    <div class="bg-white border-l-4 border-orange-500 shadow-2xl rounded-2xl p-4 md:p-5 flex items-center gap-4 min-w-full md:min-w-[350px] pointer-events-auto">
+        
+        <div class="bg-orange-100 rounded-full shrink-0 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center p-0">
+            <i class="fas fa-check-circle text-orange-600 text-lg md:text-xl"></i>
+        </div>
+        
+        <div class="flex-1">
+            <h4 class="font-bold text-gray-900 text-sm">Заявка отправлена</h4>
+            <p class="text-[11px] md:text-xs text-gray-500 mt-0.5 leading-tight">Квитанция на проверке. Статус обновится скоро.</p>
+        </div>
+        <button onclick="hideToast()" class="text-gray-400 p-1">
+            <i class="fas fa-times text-sm"></i>
+        </button>
+    </div>
+</div>
+
+    <style>
+/* Анимация: Пайда болу және үлкею */
+@keyframes modalShow {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Осы класты біз JS арқылы қосамыз */
+.animate-modal {
+    animation: modalShow 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+
+/* Toast және AI Chat батырмаларға кедергі жасамауы үшін */
+#custom-toast, #ai-chat-wrapper {
+    pointer-events: none !important;
+}
+
+/* Бірақ олардың ішіндегі батырмалар басылуы керек */
+#custom-toast button, #ai-chat-wrapper button, #ai-chat-window {
+    pointer-events: auto !important;
+}
+
+/* Header-дегі барлық басуға болатын элементтерді бетке шығару */
+header * {
+    pointer-events: auto !important;
+}
+
+    </style>
+
+
+<!-- Барлық беттің астына қосатын HTML -->
+<div id="offline-overlay" class="fixed inset-0 bg-white/90 backdrop-blur-xl z-[9999] flex-col items-center justify-center hidden">
+    <div class="text-center p-8 animate-modal">
+        <i class="fas fa-wifi-slash text-5xl text-orange-600 mb-4"></i>
+        <h2 class="text-xl font-black italic uppercase">Интернет <span class="text-orange-600">үзілді</span></h2>
+        <p class="text-[10px] font-bold text-gray-400 uppercase mt-2 mb-6 italic">Байланысты тексеріп, қайта көріңіз</p>
+        <button onclick="location.reload()" class="bg-slate-900 text-white px-8 py-3 rounded-xl font-black text-[10px] uppercase">Жаңарту</button>
+    </div>
+</div>
+
+<!-- SweetAlert2 библиотекасы (әдемі хабарлама үшін) -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+// Файл таңдалғанда атын өзгерту
+document.getElementById('support-file')?.addEventListener('change', function() {
+    const fileName = this.files[0] ? this.files[0].name : "Прикрепить скриншот";
+    const label = document.getElementById('file-name');
+    if (label) {
+        label.innerText = fileName.toUpperCase();
+        label.classList.add('text-orange-600');
+    }
+});
+
+// Форманы жіберу (Суретті оқу мүмкіндігімен)
+document.getElementById('support-form')?.addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const btn = document.getElementById('submit-btn');
+    const originalContent = btn.innerHTML;
+    const fileInput = document.getElementById('support-file');
+
+    // Жүктелу анимациясы
+    btn.innerHTML = '<i class="fas fa-circle-notch animate-spin"></i>';
+    btn.disabled = true;
+
+    // СУРЕТТІ ОҚУ (Егер файл таңдалса)
+    let imageData = null;
+    if (fileInput.files[0]) {
+        imageData = await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = (e) => resolve(e.target.result); // Суретті кодқа айналдыру
+            reader.readAsDataURL(fileInput.files[0]);
+        });
+    }
+
+    // Мәліметтерді жинау
+    const ticket = {
+        id: "TICK-" + Date.now().toString().slice(-6),
+        name: document.getElementById('sup-name').value,
+        contact: document.getElementById('sup-contact').value,
+        message: document.getElementById('sup-message').value,
+        image: imageData, // Нақты сурет осы жерде сақталады
+        date: new Date().toLocaleString(),
+        status: 'new'
+    };
+
+    // LocalStorage-қа сақтау
+    let tickets = JSON.parse(localStorage.getItem('support_tickets')) || [];
+    tickets.push(ticket);
+    localStorage.setItem('support_tickets', JSON.stringify(tickets));
+    localStorage.setItem('new_chat_request', 'true');
+
+    // Сәтті жіберілгені туралы хабарлама
+    setTimeout(() => {
+        Swal.fire({
+            title: '<span class="font-black uppercase tracking-tighter">Заявка принята!</span>',
+            html: `
+                <div class="text-center p-2">
+                    <p class="text-[11px] font-bold text-gray-500 uppercase leading-relaxed">
+                        Спасибо! Мы получили ваше сообщение.<br>
+                        Менеджер свяжется с вами в течение <span class="text-orange-600">15 минут</span></p>
+                </div>
+            `,
+            icon: 'success',
+            iconColor: '#ea580c',
+            confirmButtonText: 'ОТЛИЧНО',
+            confirmButtonColor: '#000',
+            customClass: {
+                popup: 'rounded-[2.5rem]',
+                confirmButton: 'rounded-2xl px-10 py-4 font-black uppercase text-[10px] tracking-widest'
+            }
+        });
+
+        // Форманы тазалау
+        this.reset();
+        btn.innerHTML = originalContent;
+        btn.disabled = false;
+        const fileNameLabel = document.getElementById('file-name');
+        if (fileNameLabel) {
+            fileNameLabel.innerText = "Прикрепить скриншот";
+            fileNameLabel.classList.remove('text-orange-600');
+        }
+    }, 1000);
+});
+</script>
+
+<!-- Скрипт бөлімі -->
+<script>
+function updateOnlineStatus() {
+    const overlay = document.getElementById('offline-overlay');
+    if (!navigator.onLine) {
+        overlay.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    } else {
+        overlay.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+window.addEventListener('DOMContentLoaded', updateOnlineStatus);
+</script>
+
+<script>
+        // --- 0. СЕССИЯНЫ ТЕКСЕРУ (NEW) ---
+window.addEventListener('DOMContentLoaded', () => {
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    if (!isLoggedIn || isLoggedIn !== 'true') {
+        window.location.assign('auth.html');
+        return;
+    }
+    
+    // БӘРІНЕН БҰРЫН ОСЫ ФУНКЦИЯ ТҰРУЫ КЕРЕК
+    loadUserData();      
+    
+    updateDebtStatus();  
+    renderProfileCart(); 
+    load2FAStatus();     
+    renderCertificates(); 
+    updateMenuBadges();   
+    updateOnlineStatus(); 
+    updateNavBalance();  
+});
+        // --- 1. ТАБТАР ЖҮЙЕСІ ---
+        function showTab(event, tabId) {
+            const currentId = localStorage.getItem('currentUserId');
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+            document.querySelectorAll('.nav-btn').forEach(b => {
+                b.classList.remove('bg-orange-50', 'text-orange-600', 'font-medium');
+                b.classList.add('hover:bg-gray-100');
+            });
+            const activeTab = document.getElementById(tabId);
+            if (activeTab) activeTab.classList.remove('hidden');
+            event.currentTarget.classList.add('bg-orange-50', 'text-orange-600', 'font-medium');
+            event.currentTarget.classList.remove('hover:bg-gray-100');
+
+            // --- Сертификаттар табы ашылғанда "NEW" белгісін жоғалту ---
+            if (tabId === 'tab-certificates') {
+                localStorage.setItem('certs_read_' + currentId, 'true');
+                renderCertificates();
+                updateMenuBadges(); 
+            }
+        }
+
+        // Кошелекті рендер жасау
+function renderWallet() {
+    const balance = localStorage.getItem('userBalance') || 0;
+    const bonuses = localStorage.getItem('userBonuses') || 0;
+    
+    // Экрандағы баланстарды жаңарту
+    const mainBalanceEl = document.getElementById('wallet-balance-main');
+    const bonusEl = document.getElementById('wallet-bonuses');
+    
+    if(mainBalanceEl) mainBalanceEl.innerText = Number(balance).toLocaleString() + ' ₸';
+    if(bonusEl) bonusEl.innerText = Number(bonuses).toLocaleString();
+    
+    // Навигациядағы балансты да жаңарту
+    updateNavBalance(); 
+}
+
+// Пополнить басқанда әдістерді көрсету
+function showPayMethods() {
+    const amount = document.getElementById('topup-amount').value;
+    if(!amount || amount < 100) {
+        showToast("Введите сумму от 100 ₸", "error");
+        return;
+    }
+    
+    const methods = document.getElementById('pay-methods');
+    methods.classList.remove('hidden');
+    // Мобильді браузерде төменге автоматты түрде жылжыту
+    methods.scrollIntoView({ behavior: 'smooth' });
+}
+
+// Төлем әдісін таңдау
+function processTopUp(method) {
+    const amount = document.getElementById('topup-amount').value;
+    if(method === 'kaspi') {
+        // Мысалы, Каспи QR модальді терезесін ашуға болады
+        alert(`Для пополнения на ${amount} ₸, отсканируйте Kaspi QR в приложении. Баланс обновится после проверки.`);
+    }
+}
+
+        // --- 2. GEMINI AI CHAT ENGINE ---
+        const GEMINI_API_KEY = "AIzaSyBU1eWfKxsuIJshtMzUlR4YKucfuRTvWog"; 
+        const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+
+        function toggleAIChat() { 
+            document.getElementById('ai-chat-window').classList.toggle('hidden'); 
+        }
+
+        async function queryGemini(userMessage) {
+            const systemInstruction = `
+                Ты — Qulan AI, официальный помощник интернет-магазина QulanShop (село Кулан). 
+                Твоя задача: помогать клиентам. 
+                Информация о магазине: 
+                - График: 09:00 - 20:00 (ежедневно). 
+                - Доставка: по всему району Кулан. 
+                - Владелец: ИП "QulanShop".
+                - Оплата: Kaspi Pay, Halyk Bank.
+                Отвечай кратко, дружелюбно, используй эмодзи. 
+                Если клиент спрашивает на казахском, отвечай на казахском. Если на русском — на русском.
+                Текст пользователя: ${userMessage}
+            `;
+
+            try {
+                const response = await fetch(GEMINI_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: systemInstruction }] }]
+                    })
+                });
+                const data = await response.json();
+                return data.candidates[0].content.parts[0].text;
+            } catch (e) {
+                return "Кешіріңіз, байланыс үзілді. Қайта байқап көріңізші. 🛠️";
+            }
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const container = document.getElementById('chat-messages');
+            const text = input.value.trim();
+            if (!text) return;
+
+            container.innerHTML += `
+                <div class="flex justify-end mb-2">
+                    <div class="bg-orange-600 text-white p-3 rounded-2xl rounded-tr-none max-w-[85%] shadow-sm text-xs italic font-medium">
+                        ${text}
+                    </div>
+                </div>`;
+            input.value = "";
+            container.scrollTop = container.scrollHeight;
+
+            const typingId = "typing-" + Date.now();
+            container.innerHTML += `
+                <div id="${typingId}" class="flex justify-start mb-2">
+                    <div class="bg-gray-200 text-gray-600 p-2 rounded-xl text-[10px] animate-pulse">
+                        Qulan AI жауап жазуда...
+                    </div>
+                </div>`;
+            
+            const aiReply = await queryGemini(text);
+            const typingElem = document.getElementById(typingId);
+            if(typingElem) typingElem.remove();
+
+            container.innerHTML += `
+                <div class="flex justify-start mb-2">
+                    <div class="bg-white border border-gray-100 p-3 rounded-2xl rounded-tl-none max-w-[85%] shadow-md text-xs text-gray-700 italic">
+                        ${aiReply}
+                    </div>
+                </div>`;
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // --- 3. ҚАРЫЗ СТАТУСЫН ЖАҢАРТУ ---
+        function updateDebtStatus() {
+            const currentId = localStorage.getItem('currentUserId');
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+            const user = users.find(u => u.id == currentId);
+
+            if (!user) return;
+
+            const startDateElem = document.getElementById('debt-start-date');
+            const amountElem = document.getElementById('debt-amount');
+            const card = document.getElementById('debt-card');
+            const text = document.getElementById('debt-warning-text');
+            const btn = document.getElementById('pay-button');
+            const notice = document.getElementById('restriction-notice');
+            
+            const debtDetails = document.getElementById('debt-details');
+            const orderNumElem = document.getElementById('debt-order-number');
+
+            const debt = user.debt || 0;
+            const debtDate = user.debtDate || null;
+            const orderNum = user.lastDebtOrder || "#QS-000000";
+
+            amountElem.innerText = debt.toLocaleString() + " ₸";
+
+            if (debt <= 0) {
+                if (debtDetails) debtDetails.classList.add('hidden'); 
+                card.className = "flex flex-col md:flex-row items-center justify-between p-6 bg-green-50 rounded-[2.5rem] border border-green-200 gap-6";
+                text.innerText = "Ваш баланс в порядке. Статус: Стабильный";
+                text.className = "text-[10px] mt-2 font-bold uppercase text-green-600 italic";
+                amountElem.className = "text-4xl md:text-5xl font-black text-green-600 mt-1 italic";
+                if (btn) btn.classList.add('hidden');
+                if (notice) notice.classList.add('hidden');
+                return;
+            }
+
+            if (debtDetails) debtDetails.classList.remove('hidden'); 
+            if (btn) btn.classList.remove('hidden');
+            if (startDateElem) startDateElem.innerText = debtDate;
+            if (orderNumElem) orderNumElem.innerText = orderNum;
+            
+            const startDate = new Date(debtDate);
+            const now = new Date();
+            const diffDays = Math.ceil(Math.abs(now - startDate) / (1000 * 60 * 60 * 24));
+            const diffMonths = diffDays / 30;
+
+            if (diffMonths <= 1) {
+                card.className = "flex flex-col md:flex-row items-center justify-between p-6 bg-green-50 rounded-[2.5rem] border border-green-200 gap-6";
+                text.innerText = "Срок оплаты в норме. Статус: Стабильный";
+                text.className = "text-[10px] mt-2 font-bold uppercase text-green-600 italic";
+                amountElem.className = "text-4xl md:text-5xl font-black text-green-600 mt-1 italic";
+                if (btn) btn.className = "w-full md:w-auto bg-green-600 text-white px-10 py-4 rounded-2xl font-bold text-lg hover:bg-green-700 transition shadow-lg uppercase tracking-wider";
+            } else if (diffMonths <= 2) {
+                card.className = "flex flex-col md:flex-row items-center justify-between p-6 bg-yellow-50 rounded-[2.5rem] border border-yellow-200 gap-6";
+                text.innerText = "Внимание! Идет второй month задолженности";
+                text.className = "text-[10px] mt-2 font-bold uppercase text-yellow-700 italic";
+                amountElem.className = "text-4xl md:text-5xl font-black text-yellow-600 mt-1 italic";
+                if (btn) btn.className = "w-full md:w-auto bg-yellow-500 text-white px-10 py-4 rounded-2xl font-bold text-lg hover:bg-yellow-600 transition shadow-lg uppercase tracking-wider";
+            } else {
+                card.className = "flex flex-col md:flex-row items-center justify-between p-6 bg-red-50 rounded-[2.5rem] border border-red-200 gap-6";
+                text.innerText = "КРИТИЧЕСКИЙ СРОК! Срочно погасите долг";
+                text.className = "text-[10px] mt-2 font-bold uppercase text-red-600 italic";
+                amountElem.className = "text-4xl md:text-5xl font-black text-red-600 mt-1 italic";
+                if (btn) btn.className = "w-full md:w-auto bg-red-600 text-white px-10 py-4 rounded-2xl font-bold text-lg hover:bg-red-700 transition shadow-lg animate-bounce uppercase tracking-wider";
+                if (diffMonths >= 3 && notice) notice.classList.remove('hidden');
+            }
+        }
+
+        // --- 4. СЕБЕТТІ БАСҚАРУ ---
+        function renderProfileCart() {
+            const cartItemsList = document.getElementById('cart-items-list');
+            const emptyMsg = document.getElementById('empty-cart-msg');
+            const cartFooter = document.getElementById('cart-footer');
+            const totalPriceElem = document.getElementById('cart-total-price');
+            
+            if (!cartItemsList) return;
+            let cart = JSON.parse(localStorage.getItem('qulanCart')) || [];
+
+            if (cart.length === 0) {
+                cartItemsList.innerHTML = '';
+                if (emptyMsg) emptyMsg.classList.remove('hidden');
+                if (cartFooter) cartFooter.classList.add('hidden');
+                updateMenuBadges();
+                return;
+            }
+
+            if (emptyMsg) emptyMsg.classList.add('hidden');
+            if (cartFooter) cartFooter.classList.remove('hidden');
+            
+            let total = 0;
+            let htmlContent = '';
+
+            cart.forEach((item, index) => {
+                const price = parseInt(item.price) || 0;
+                const qty = item.quantity || 1;
+                total += price * qty;
+                htmlContent += `
+                    <div class="flex items-center justify-between p-4 bg-white rounded-2xl border border-gray-100 shadow-sm mb-3 animate-modal">
+                        <div class="flex items-center gap-4">
+                            <div class="w-14 h-14 bg-gray-50 rounded-xl flex items-center justify-center text-orange-500 overflow-hidden border">
+                                 <img src="${item.image || 'images/no-photo.jpg'}" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/150'">
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-sm text-gray-800">${item.name}</h4>
+                                <p class="text-orange-600 font-black text-sm">${price.toLocaleString()} ₸ ${qty > 1 ? 'x'+qty : ''}</p>
+                            </div>
+                        </div>
+                        <button type="button" onclick="removeFromCart(${index})" class="text-gray-300 hover:text-red-500 p-2 transition active:scale-90">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                `;
+            });
+            cartItemsList.innerHTML = htmlContent;
+            if (totalPriceElem) totalPriceElem.innerText = total.toLocaleString() + ' ₸';
+            updateMenuBadges();
+        }
+
+        function removeFromCart(index) {
+            let cart = JSON.parse(localStorage.getItem('qulanCart')) || [];
+            cart.splice(index, 1);
+            localStorage.setItem('qulanCart', JSON.stringify(cart));
+            renderProfileCart();
+        }
+
+        // --- 5. ПРОФИЛЬ ДЕРЕКТЕРІН БАСҚАРУ ---
+        function loadUserData() {
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const currentId = localStorage.getItem('currentUserId');
+            const currentUser = users.find(u => u.id == currentId);
+
+            if (currentUser) {
+                if (document.getElementById('user-fullname-header')) 
+                    document.getElementById('user-fullname-header').innerText = currentUser.name;
+                
+                if (document.getElementById('user-fullname-input')) 
+                    document.getElementById('user-fullname-input').value = currentUser.name;
+
+                if (document.getElementById('user-phone-input')) 
+                    document.getElementById('user-phone-input').value = currentUser.phone || '';
+
+                if (document.getElementById('user-email-input')) 
+                    document.getElementById('user-email-input').value = currentUser.email || '';
+
+                if (document.getElementById('user-address-input')) 
+                    document.getElementById('user-address-input').value = currentUser.address || '';
+            }
+        }
+
+        // Фотоны жүктеп, базаға сақтау функциясы
+function uploadAvatar(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            const base64Image = e.target.result; // Суретті мәтін түріне айналдырады
+            
+            // 1. Экрандағы суретті бірден өзгерту
+            document.getElementById('user-avatar').src = base64Image;
+            
+            // 2. Базаға (LocalStorage) сақтау
+            const currentId = localStorage.getItem('currentUserId');
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+            const userIndex = users.findIndex(u => String(u.id) === String(currentId));
+            
+            if (userIndex !== -1) {
+                users[userIndex].avatar = base64Image; // Пайдаланушыға суретті тіркейміз
+                localStorage.setItem('users', JSON.stringify(users));
+                
+                // Хабарлама шығару
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Фото обновлено!',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
+        };
+
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+function loadUserData() {
+    // 1. LocalStorage-тан деректі алу
+    const userJson = localStorage.getItem('currentUser');
+    
+    // Элементтерді айнымалыға алу
+    const headerName = document.getElementById('user-fullname-header');
+    const nameInput = document.getElementById('user-fullname-input');
+    const avatarImg = document.getElementById('user-avatar');
+
+    if (userJson && userJson !== "null") {
+        const user = JSON.parse(userJson);
+        
+        // 2. АТЫН АНЫҚТАУ (newUser құрылымына сәйкес тексереміз)
+        // Сенің нысаныңда 'name' қолданылады
+        const displayName = user.name || user.displayName || user.username || "Пользователь";
+
+        // 3. Экранға шығару (Header және Инпут)
+        if (headerName) headerName.innerText = displayName;
+        if (nameInput) nameInput.value = displayName;
+
+        // 4. СУРЕТТІ ШЫҒАРУ ( newUser ішіндегі 'photo' өрісі)
+        if (avatarImg) {
+            // Егер сурет базада болса соны, болмаса 'photo'-ны, болмаса әдемі иконканы қояды
+            avatarImg.src = user.avatar || user.photo || "https://ui-avatars.com/api/?name=" + encodeURIComponent(displayName) + "&background=random";
+        }
+
+        // 5. БАСҚА ДЕРЕКТЕРДІ ТОЛТЫРУ
+        if (document.getElementById('user-phone-input')) 
+            document.getElementById('user-phone-input').value = user.phone || '';
+        
+        if (document.getElementById('user-email-input')) 
+            document.getElementById('user-email-input').value = user.email || '';
+
+        if (document.getElementById('user-address-input')) 
+            document.getElementById('user-address-input').value = user.address || '';
+
+        console.log("Профиль сәтті жаңартылды:", displayName);
+    } else {
+        window.location.assign('auth.html');
+    }
+}
+        function saveProfileChanges() {
+            const currentId = localStorage.getItem('currentUserId');
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+            const userIndex = users.findIndex(u => u.id == currentId);
+
+            if (userIndex !== -1) {
+                users[userIndex].phone = document.getElementById('user-phone-input').value;
+                users[userIndex].email = document.getElementById('user-email-input').value;
+                users[userIndex].address = document.getElementById('user-address-input').value;
+
+                localStorage.setItem('users', JSON.stringify(users));
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Сақталды!',
+                    text: 'Мәліметтеріңіз сәтті жаңартылды.',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            }
+        }
+
+        // --- 6. ПАРОЛЬ ЖӘНЕ ҚАУІПСІЗДІК ---
+        function togglePass(inputId, btn) {
+            const input = document.getElementById(inputId);
+            const icon = btn.querySelector('i');
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = "password";
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+
+        function changePassword() {
+            const currentPassInput = document.getElementById('current-password');
+            const newPassInput = document.getElementById('new-password');
+            const errorMsg = document.getElementById('error-msg');
+            const successMsg = document.getElementById('success-msg');
+
+            const currentId = localStorage.getItem('currentUserId');
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+            const userIndex = users.findIndex(u => u.id == currentId);
+
+            if (userIndex !== -1) {
+                if (currentPassInput.value !== users[userIndex].password) {
+                    errorMsg.classList.remove('hidden');
+                    currentPassInput.classList.add('border-red-500');
+                    return;
+                }
+
+                if (newPassInput.value.length < 6) {
+                    Swal.fire('Ошибка', 'Новый пароль должен быть не менее 6 символов', 'warning');
+                    return;
+                }
+
+                users[userIndex].password = newPassInput.value;
+                localStorage.setItem('users', JSON.stringify(users));
+                
+                errorMsg.classList.add('hidden');
+                currentPassInput.classList.remove('border-red-500');
+                successMsg.classList.remove('hidden');
+                currentPassInput.value = "";
+                newPassInput.value = "";
+                setTimeout(() => successMsg.classList.add('hidden'), 3000);
+            }
+        }
+
+        function toggle2FA() {
+            const checkbox = document.getElementById('2fa-toggle');
+            const statusText = document.getElementById('2fa-status-text');
+            const infoBox = document.getElementById('2fa-info');
+            
+            const currentId = localStorage.getItem('currentUserId');
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+            const userIndex = users.findIndex(u => u.id == currentId);
+
+            if (userIndex !== -1) {
+                users[userIndex].twoFactorEnabled = checkbox.checked;
+                localStorage.setItem('users', JSON.stringify(users));
+
+                if (checkbox.checked) {
+                    statusText.innerText = "В данный момент: Включено";
+                    statusText.classList.add('text-orange-600', 'font-bold');
+                    infoBox.classList.remove('hidden');
+                    Swal.fire('Защита включена', 'Теперь при каждом входе потребуется подтверждение по Email', 'success');
+                } else {
+                    statusText.innerText = "В настоящее время: Отключено";
+                    statusText.classList.remove('text-orange-600', 'font-bold');
+                    infoBox.classList.add('hidden');
+                    Swal.fire('Защита отключена', 'Ваш аккаунт защищен только паролем', 'info');
+                }
+            }
+        }
+
+        function load2FAStatus() {
+            const currentId = localStorage.getItem('currentUserId');
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const user = users.find(u => u.id == currentId);
+            
+            if (user && user.twoFactorEnabled) {
+                const checkbox = document.getElementById('2fa-toggle');
+                const statusText = document.getElementById('2fa-status-text');
+                const infoBox = document.getElementById('2fa-info');
+                
+                if (checkbox) checkbox.checked = true;
+                if (statusText) {
+                    statusText.innerText = "В данный момент: Включено";
+                    statusText.classList.add('text-orange-600', 'font-bold');
+                }
+                if (infoBox) infoBox.classList.remove('hidden');
+            }
+        }
+
+        // --- 7. ТӨЛЕМ ЖӘНЕ TOAST ---
+        function openPayment() {
+            const modal = document.getElementById('payment-modal');
+            const modalContent = modal.querySelector('div');
+            modal.classList.remove('hidden');
+            modalContent.classList.add('animate-modal');
+        }
+
+        function closePayment(isPaid = false) {
+            const modal = document.getElementById('payment-modal');
+            const modalContent = modal.querySelector('div');
+            modal.classList.add('hidden');
+            if (modalContent) modalContent.classList.remove('animate-modal');
+
+            if (isPaid) {
+                const currentId = localStorage.getItem('currentUserId');
+                let users = JSON.parse(localStorage.getItem('users')) || [];
+                const userIndex = users.findIndex(u => u.id == currentId);
+
+                if (userIndex !== -1) {
+                    users[userIndex].debt = 0;
+                    users[userIndex].debtDate = null;
+                    localStorage.setItem('users', JSON.stringify(users));
+                    updateDebtStatus(); 
+                    showToast();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Заявка отправлена!',
+                        text: 'Менеджер проверит оплату и обновит баланс.',
+                        confirmButtonColor: '#f26522'
+                    });
+                }
+            }
+        }
+
+        function showToast() {
+            const toast = document.getElementById('custom-toast');
+            toast.classList.remove('opacity-0', '-translate-y-10');
+            toast.classList.add('opacity-100', 'translate-y-0');
+            setTimeout(hideToast, 4000);
+        }
+
+        function hideToast() {
+            const toast = document.getElementById('custom-toast');
+            if (toast) {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', '-translate-y-10');
+            }
+        }
+
+        // --- 8. LOGOUT ---
+        function handleLogout() {
+            Swal.fire({
+                title: 'Выйти?',
+                text: "Вы уверены, что хотите выйти из аккаунта?",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#f26522',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Да, выйти',
+                cancelButtonText: 'Отмена'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    localStorage.removeItem('isLoggedIn');
+                    localStorage.removeItem('currentUserId');
+                    window.location.assign('auth.html');
+                }
+            });
+        }
+
+        // --- 9. СЕРТИФИКАТТАРДЫ ШЫҒАРУ ---
+        function renderCertificates() {
+            const list = document.getElementById('certificates-list');
+            const currentId = localStorage.getItem('currentUserId');
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const user = users.find(u => u.id == currentId);
+
+            if (!user || !user.certificates || user.certificates.length === 0) {
+                document.getElementById('no-certificates').classList.remove('hidden');
+                return;
+            }
+
+            list.innerHTML = user.certificates.map((cert, index) => `
+                <div onclick="openCertModal(${index})" class="cert-card-mini ${cert.style} p-5 rounded-[1.8rem] text-white h-44 flex flex-col justify-between shadow-xl animate-modal relative overflow-hidden">
+                    <img src="https://i.ibb.co/4ZRXvjwR/qulan.jpg" class="absolute right-[-5%] bottom-[-5%] w-2/3 opacity-20 pointer-events-none mix-blend-overlay rotate-[-15deg]">
+                    
+                    <div class="relative z-10 flex justify-between items-start">
+                        <div class="glass-effect px-2 py-1 rounded-lg text-[10px] font-black italic uppercase">QULANSHOP</div>
+                        <div class="w-10 h-10 bg-white/10 rounded-full border border-white/30 p-0.5 overflow-hidden">
+                            <img src="https://i.ibb.co/DHYkbZCv/cart.jpg" class="w-full h-full object-cover rounded-full">
+                        </div>
+                    </div>
+                    
+                    <div class="relative z-10">
+                        <p class="text-[8px] font-bold uppercase opacity-70 italic tracking-widest">Номинал</p>
+                        <h3 class="text-2xl font-black italic">${Number(cert.amount).toLocaleString()} ₸</h3>
+                    </div>
+                    
+                    <div class="relative z-10 flex justify-between items-end">
+                        <span class="text-[9px] font-mono opacity-60">${cert.code}</span>
+                        <div class="glass-effect px-2 py-0.5 rounded-md text-[8px] font-black uppercase">Gift Card</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // --- 10. МЕНЮДЕГІ БЕЛГІШЕЛЕРДІ (BADGES) ЖАҢАРТУ ---
+        function updateMenuBadges() {
+            const currentId = localStorage.getItem('currentUserId');
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const user = users.find(u => u.id == currentId);
+            let cart = JSON.parse(localStorage.getItem('qulanCart')) || [];
+
+            const badgeCart = document.getElementById('badge-cart');
+            if (badgeCart) {
+                if (cart.length > 0) {
+                    badgeCart.innerText = cart.length;
+                    badgeCart.classList.remove('hidden');
+                } else {
+                    badgeCart.classList.add('hidden');
+                }
+            }
+
+            if (user) {
+                const badgeDebt = document.getElementById('badge-debt');
+                if (badgeDebt) {
+                    if (user.debt > 0) badgeDebt.classList.remove('hidden');
+                    else badgeDebt.classList.add('hidden');
+                }
+
+                const badgeCert = document.getElementById('badge-cert');
+                const isRead = localStorage.getItem('certs_read_' + currentId);
+                if (badgeCert) {
+                    if (user.certificates && user.certificates.length > 0 && !isRead) {
+                        badgeCert.innerText = user.certificates.length;
+                        badgeCert.classList.remove('hidden');
+                    } else {
+                        badgeCert.classList.add('hidden');
+                    }
+                }
+            }
+        }
+
+        // --- 11. ИНТЕРНЕТТІ БАҚЫЛАУ ---
+        function updateOnlineStatus() {
+            const overlay = document.getElementById('offline-overlay');
+            if (!overlay) return;
+            if (!navigator.onLine) {
+                overlay.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            } else {
+                overlay.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        }
+        window.addEventListener('online', updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
+
+        // --- 12. МОДАЛЬДІ ТЕРЕЗЕ (КАРТАНЫҢ ҮЛКЕН ТҮРІ) ---
+        function openCertModal(index) {
+            const currentId = localStorage.getItem('currentUserId');
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const user = users.find(u => u.id == currentId);
+            const cert = user.certificates[index];
+
+            const modal = document.getElementById('cert-modal');
+            const content = document.getElementById('cert-modal-content');
+            const wishBox = document.getElementById('modal-wish-container');
+            const wishText = document.getElementById('modal-wish-text');
+            
+            content.innerHTML = `
+                <div id="pdf-receipt" class="${cert.style} w-full aspect-[1.6/1] rounded-[2rem] p-8 md:p-12 shadow-2xl relative overflow-hidden flex flex-col justify-between text-white mx-auto animate-modal">
+                    <img src="https://i.ibb.co/4ZRXvjwR/qulan.jpg" class="absolute right-[-5%] bottom-[-5%] w-2/3 opacity-20 pointer-events-none mix-blend-overlay rotate-[-15deg]">
+                    
+                    <div class="flex justify-between items-start relative z-10">
+                        <div class="glass-effect px-4 py-2 rounded-2xl border border-white/20">
+                            <span class="font-black italic text-sm md:text-xl uppercase">QULANSHOP</span>
+                        </div>
+                        <div class="w-16 h-16 md:w-24 md:h-24 bg-white/10 rounded-full border-2 border-white/30 p-1 shadow-2xl overflow-hidden">
+                            <img src="https://i.ibb.co/DHYkbZCv/cart.jpg" class="w-full h-full object-cover rounded-full">
+                        </div>
+                    </div>
+
+                    <div class="relative z-10">
+                        <p class="text-[10px] md:text-sm font-bold uppercase tracking-[0.3em] opacity-70 mb-1 italic">Номинал подарка</p>
+                        <div class="text-4xl md:text-6xl font-black italic tracking-tighter">${Number(cert.amount).toLocaleString()} ₸</div>
+                    </div>
+
+                    <div class="flex justify-between items-end relative z-10">
+                        <div>
+                            <p class="text-[9px] md:text-sm font-mono opacity-50 tracking-widest mb-1">${cert.code}</p>
+                            <p class="text-[8px] md:text-xs font-black uppercase tracking-widest opacity-90 italic">Владелец: ${user.name}</p>
+                        </div>
+                        <div class="glass-effect px-3 py-1.5 rounded-xl text-[10px] md:text-sm font-black uppercase">Gift Card</div>
+                    </div>
+                </div>
+            `;
+
+            if (cert.wish) {
+                wishBox.classList.remove('hidden');
+                wishText.innerText = cert.wish;
+            } else {
+                wishBox.classList.add('hidden');
+            }
+
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+
+            document.getElementById('download-pdf-btn').onclick = () => downloadPDF(cert);
+            
+            const shareText = `Привет! Мой подарочный сертификат от QulanShop на сумму ${cert.amount} ₸! 🎁 Код: ${cert.code}`;
+            document.getElementById('share-wa-btn').onclick = () => window.open(`https://wa.me/?text=${encodeURIComponent(shareText)}`);
+            document.getElementById('share-tg-btn').onclick = () => window.open(`https://t.me/share/url?url=QulanShop&text=${encodeURIComponent(shareText)}`);
+        }
+
+        function closeCertModal() {
+            document.getElementById('cert-modal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        async function downloadPDF(cert) {
+            const element = document.getElementById('pdf-receipt');
+            const btn = document.getElementById('download-pdf-btn');
+            
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Создание...';
+            btn.disabled = true;
+
+            const opt = {
+                margin: 10,
+                filename: `Receipt_${cert.code}.pdf`,
+                image: { type: 'jpeg', quality: 1 },
+                html2canvas: { scale: 3, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            try {
+                await html2pdf().set(opt).from(element).save();
+            } catch (e) {
+                alert("Ошибка при загрузке");
+            } finally {
+                btn.innerHTML = '<i class="fas fa-file-pdf"></i> Скачать PDF чек';
+                btn.disabled = false;
+            }
+        }
+
+        // Event listeners
+        document.getElementById('chat-input')?.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+// Навигациядағы балансты жаңарту функциясы
+function updateNavBalance() {
+    // LocalStorage-тен балансты аламыз (егер жоқ болса 0)
+    const balance = localStorage.getItem('userBalance') || 0;
+    const balanceEl = document.getElementById('nav-balance');
+    
+    if (balanceEl) {
+        // Санды әдемі форматта шығару (мысалы: 15 000 ₸)
+        balanceEl.innerText = Number(balance).toLocaleString() + ' ₸';
+    }
+}
+
+let isEditMode = false;
+
+function toggleEditMode() {
+    const btn = document.getElementById('edit-profile-btn');
+    const phoneInput = document.getElementById('user-phone-input');
+    const emailInput = document.getElementById('user-email-input');
+    const addressInput = document.getElementById('user-address-input');
+
+    if (!isEditMode) {
+        // --- ӨЗГЕРТУ РЕЖИМІН ҚОСУ ---
+        isEditMode = true;
+        phoneInput.disabled = false;
+        emailInput.disabled = false;
+        addressInput.disabled = false;
+        
+        btn.innerText = "Сохранить изменения";
+        btn.classList.replace('bg-orange-600', 'bg-green-600'); // Жасыл түске ауыстыру (опционально)
+        phoneInput.focus();
+    } else {
+        // --- САҚТАУ РЕЖИМІН ҚОСУ ---
+        saveProfileChanges();
+    }
+}
+
+function saveProfileChanges() {
+    const currentId = localStorage.getItem('currentUserId');
+    let users = JSON.parse(localStorage.getItem('users')) || [];
+    const userIndex = users.findIndex(u => String(u.id) === String(currentId));
+
+    if (userIndex !== -1) {
+        // 1. Деректерді базаға (users тізіміне) жаңарту
+        users[userIndex].phone = document.getElementById('user-phone-input').value;
+        users[userIndex].email = document.getElementById('user-email-input').value;
+        users[userIndex].address = document.getElementById('user-address-input').value;
+
+        // 2. LocalStorage-ты жаңарту
+        localStorage.setItem('users', JSON.stringify(users));
+        
+        // 3. Сессияны (currentUser) жаңарту (атың жоғалып кетпеуі үшін маңызды)
+        localStorage.setItem('currentUser', JSON.stringify(users[userIndex]));
+
+        // 4. Интерфейсті қайта жабу
+        isEditMode = false;
+        document.getElementById('user-phone-input').disabled = true;
+        document.getElementById('user-email-input').disabled = true;
+        document.getElementById('user-address-input').disabled = true;
+
+        const btn = document.getElementById('edit-profile-btn');
+        btn.innerText = "Изменить данные";
+        btn.classList.replace('bg-green-600', 'bg-orange-600');
+
+        // 5. Хабарлама шығару
+        Swal.fire({
+            icon: 'success',
+            title: 'Данные обновлены',
+            timer: 2000,
+            showConfirmButton: false,
+            customClass: { popup: 'rounded-[2rem]' }
+        });
+        
+        // 6. Header-дегі атын қайта тексеру (керек болса)
+        loadUserData();
+    }
+}
+
+    </script>
+</html>
