@@ -111,6 +111,20 @@
     <button onclick="showTab(event, 'tab-certificates')" class="nav-btn flex justify-between items-center whitespace-nowrap w-auto md:w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100 transition text-xs md:text-sm">
         Мои сертификаты <span id="badge-cert" class="hidden bg-orange-500 text-white text-[9px] px-1.5 py-0.5 rounded-full ml-2 font-black italic">NEW</span>
     </button>
+
+<button onclick="showTab(event, 'tab-referral')" 
+        class="nav-btn flex items-center justify-between shrink-0 md:w-full text-left px-3 py-2 rounded-xl hover:bg-blue-50 transition-all border border-blue-100 md:border-blue-200 group overflow-hidden">
+    <div class="flex items-center min-w-0">
+        <div class="w-7 h-7 bg-blue-100 rounded-lg flex items-center justify-center mr-2 group-hover:scale-110 transition-transform shrink-0">
+            <i class="fas fa-user-plus text-blue-600 text-[10px]"></i>
+        </div>
+        <span class="text-blue-600 font-bold text-[10px] md:text-sm italic truncate">Пригласи друга</span>
+    </div>
+    <span class="ml-2 bg-blue-600 text-white text-[8px] md:text-[9px] px-1.5 py-0.5 rounded-full font-black animate-pulse shadow-sm shadow-blue-200 shrink-0">
+        +500 ₸
+    </span>
+</button>
+
 </nav>
 
         <h3 class="text-gray-400 text-[9px] md:text-[10px] font-bold uppercase mt-4 mb-3 px-3 italic tracking-wider border-t md:border-none pt-3 md:pt-0">Безопасность</h3>
@@ -143,6 +157,67 @@
 
             <section class="w-full md:w-3/4">
 
+         <div id="tab-referral" class="tab-content hidden animate-modal px-1 md:px-0">
+    <div class="mb-6 md:mb-8">
+        <h2 class="text-xl md:text-2xl font-black uppercase tracking-tighter text-gray-900 leading-none">
+            Пригласи <span class="text-blue-600">друга</span>
+        </h2>
+        <p class="text-[9px] md:text-[10px] font-bold text-gray-400 uppercase mt-2 italic tracking-wider">
+            Бонусная программа QulanShop
+        </p>
+    </div>
+
+    <div class="relative overflow-hidden bg-slate-900 p-6 md:p-10 rounded-[2rem] md:rounded-[3rem] text-white shadow-xl mb-6 border border-white/5">
+        <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-blue-600 rounded-full blur-[80px] opacity-30"></div>
+        <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div>
+                <h3 class="text-2xl md:text-4xl font-black italic mb-2 md:mb-3 leading-none uppercase">
+                    Получи <span class="text-blue-500">500 ₸</span>
+                </h3>
+                <p class="text-[10px] md:text-xs font-bold opacity-60 uppercase tracking-widest italic leading-relaxed max-w-[250px]">
+                    Пригласи первого друга и получи разовый бонус на свой баланс.
+                </p>
+            </div>
+            <div class="shrink-0">
+                <div class="w-14 h-14 md:w-20 md:h-20 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl md:rounded-[2rem] flex items-center justify-center shadow-inner">
+                    <i class="fas fa-gift text-blue-500 text-2xl md:text-4xl"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white border border-gray-100 p-5 md:p-8 rounded-[2rem] md:rounded-[3rem] shadow-sm space-y-6">
+        <div>
+            <label class="text-[9px] font-black uppercase text-gray-400 ml-3 mb-2 block tracking-widest">Твоя ссылка:</label>
+            <div class="flex flex-col sm:flex-row items-stretch gap-2 bg-gray-50 p-1.5 rounded-2xl border-2 border-dashed border-gray-200">
+                <input type="text" id="referral-link" readonly value="Загрузка..." 
+                    class="flex-1 bg-transparent border-none outline-none px-4 py-3 text-[16px] md:text-[13px] font-bold text-gray-600 truncate min-w-0">
+                <button onclick="copyReferralLink()" 
+                    class="bg-blue-600 text-white px-6 py-3 rounded-xl text-[10px] font-black uppercase italic active:scale-95 transition-all shadow-lg shadow-blue-100 shrink-0">
+                    Копировать
+                </button>
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-2 gap-3 md:gap-6">
+            <div class="bg-gray-50/50 p-4 md:p-6 rounded-2xl md:rounded-[2.5rem] border border-gray-100 text-center">
+                <p id="ref-count-display" class="text-xl md:text-3xl font-black text-slate-950 italic leading-none">0</p>
+                <p class="text-[8px] md:text-[10px] font-black text-gray-400 uppercase italic mt-2">Приглашено</p>
+            </div>
+            <div class="bg-blue-50/50 p-4 md:p-6 rounded-2xl md:rounded-[2.5rem] border border-blue-100 text-center">
+                <p id="ref-earned-display" class="text-xl md:text-3xl font-black text-blue-600 italic leading-none">0 ₸</p>
+                <p class="text-[8px] md:text-[10px] font-black text-blue-500 uppercase italic mt-2">Бонус получен</p>
+            </div>
+        </div>
+
+        <div class="flex items-start gap-3 bg-amber-50 p-4 rounded-2xl border border-amber-100/50">
+            <i class="fas fa-exclamation-circle text-amber-500 text-[10px] mt-0.5"></i>
+            <p class="text-[9px] font-bold text-amber-700/80 uppercase leading-relaxed italic">
+                Внимание: Бонус начисляется только один раз за первого успешно зарегистрированного друга.
+            </p>
+        </div>
+    </div>
+</div>
                 <!-- ТАБ: ЦЕНТР ПОМОЩИ -->
 <div id="tab-support" class="tab-content hidden animate-card">
     <div class="mb-8">
@@ -361,46 +436,45 @@
     </div>
 
     <!-- Негізгі Grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+   <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8 items-stretch">
+    
+    <div class="relative overflow-hidden bg-[#0f0f0f] p-6 sm:p-8 md:p-10 rounded-[2rem] md:rounded-[3rem] text-white shadow-2xl border border-white/5 flex flex-col justify-between min-h-[240px] md:min-h-[280px] w-full">
         
-        <!-- КАРТОЧКА БАЛАНСА (Deep Carbon Card) -->
-        <div class="relative overflow-hidden bg-gradient-to-br from-[#1a1a1a] to-[#0a0a0a] p-10 rounded-[3rem] text-white shadow-2xl border border-white/10 flex flex-col justify-between min-h-[280px]">
-            
-            <!-- Сәндік фондық жарық (Градиент) -->
-            <div class="absolute -top-24 -right-24 w-80 h-80 bg-orange-600/10 rounded-full blur-[100px]"></div>
-            
-            <div class="relative z-10">
-                <div class="flex justify-between items-start mb-12">
-                    <div>
-                        <p class="text-gray-500 text-[10px] font-black uppercase tracking-[0.3em] mb-4 text-left">Доступный остаток</p>
-                        <div class="flex items-baseline gap-4">
-                            <h3 id="wallet-balance-main" class="text-6xl font-black tracking-tighter leading-none">0</h3>
-                            <span class="text-2xl font-bold text-orange-500 uppercase tracking-widest">kzt</span>
-                        </div>
-                    </div>
-                    <!-- Card Chip / Icon -->
-                    <div class="w-14 h-14 bg-white/5 backdrop-blur-3xl rounded-2xl border border-white/10 flex items-center justify-center shadow-inner">
-                        <i class="fas fa-wallet text-orange-500 text-2xl"></i>
+        <div class="absolute -top-24 -right-24 w-80 h-80 bg-orange-600/10 rounded-full blur-[100px] pointer-events-none"></div>
+        
+        <div class="relative z-10 h-full flex flex-col justify-between">
+            <div class="flex justify-between items-start">
+                <div>
+                    <p class="text-gray-500 text-[8px] md:text-[10px] font-black uppercase tracking-[0.3em] mb-4 text-left">Доступный остаток</p>
+                    <div class="flex items-baseline gap-3">
+                        <h3 id="wallet-balance-main" class="text-4xl md:text-6xl font-black tracking-tighter leading-none">0</h3>
+                        <span class="text-xl md:text-2xl font-bold text-orange-500 uppercase">kzt</span>
                     </div>
                 </div>
-                
-                <div class="flex items-center gap-8">
-                    <div class="flex flex-col">
-                        <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-2 text-left">Накоплено Q-Coins</p>
-                        <div class="flex items-center gap-2 bg-white/5 py-2 px-4 rounded-xl border border-white/5">
-                            <i class="fas fa-coins text-yellow-500 text-xs"></i>
-                            <span id="wallet-bonuses" class="text-sm font-black tracking-tight text-white">0.00</span>
-                        </div>
+
+                <div class="w-12 h-12 md:w-14 md:h-14 bg-white/5 backdrop-blur-3xl rounded-2xl border border-white/10 flex items-center justify-center shrink-0 ml-4">
+                    <i class="fas fa-wallet text-orange-500 text-xl md:text-2xl"></i>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-6 md:gap-8 mt-8">
+                <div class="flex flex-col">
+                    <p class="text-[7px] md:text-[8px] font-black text-gray-500 uppercase mb-2 text-left">Q-Coins</p>
+                    <div class="flex items-center gap-2 bg-white/5 py-2 px-4 rounded-xl border border-white/5">
+                        <i class="fas fa-coins text-yellow-500 text-[10px]"></i>
+                        <span id="wallet-bonuses" class="text-xs md:text-sm font-black text-white">0.00</span>
                     </div>
-                    <div class="flex flex-col border-l border-white/10 pl-8">
-                        <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-2 text-left">Статус счета</p>
-                        <span class="text-[10px] font-black text-white uppercase tracking-[0.2em] flex items-center gap-2">
-                            <i class="fas fa-check-circle text-blue-400"></i> Верифицирован
-                        </span>
-                    </div>
+                </div>
+                <div class="flex flex-col border-l border-white/10 pl-6 md:pl-8">
+                    <p class="text-[7px] md:text-[8px] font-black text-gray-500 uppercase mb-2 text-left">Статус</p>
+                    <span class="text-[8px] md:text-[10px] font-black text-white uppercase flex items-center gap-2 tracking-wider">
+                        <i class="fas fa-check-circle text-blue-400 text-[10px]"></i> Верифицирован
+                    </span>
                 </div>
             </div>
         </div>
+    </div>
+
 
         <!-- ФОРМА ПОПОЛНЕНИЯ (Clean Executive) -->
         <div class="bg-white p-10 rounded-[3rem] border border-gray-100 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.05)] flex flex-col justify-center">
@@ -715,35 +789,58 @@
     </div>
 </div>
 
-<div id="payment-modal" class="hidden fixed inset-0 bg-black/60 z-[200] flex items-center justify-center p-4 backdrop-blur-sm">
-    <div class="bg-white rounded-[2.5rem] max-w-md w-full p-8 shadow-2xl relative border border-orange-100">
-        <button onclick="closePayment(false)" class="absolute top-6 right-6 text-gray-400 hover:text-black transition-transform hover:rotate-0">
-            <i class="fas fa-times text-xl"></i>
+<div id="payment-modal" class="hidden fixed inset-0 bg-black/70 z-[1000] flex items-center justify-center p-4 backdrop-blur-md">
+    <div class="bg-white rounded-[2rem] md:rounded-[2.5rem] w-full max-w-md p-6 md:p-8 shadow-2xl relative border border-orange-100 animate-modal">
+        
+        <button onclick="closePayment(false)" class="absolute top-4 right-4 md:top-6 md:right-6 text-gray-400 hover:text-red-500 transition-all p-2 active:scale-90">
+            <i class="fas fa-times text-xl md:text-lg"></i>
         </button>
-        <h2 class="text-2xl font-black italic text-orange-600 mb-6 uppercase text-center">Оплата задолженности</h2>
-        <div class="space-y-4 mb-8">
-            <div class="p-4 bg-orange-50 rounded-2xl border border-orange-100 text-center">
-                <p class="text-[10px] text-orange-400 font-bold uppercase mb-1">Получатель:</p>
-                <p class="font-bold text-gray-800 italic uppercase">ИП "QulanShop"</p>
-            </div>
-            <div class="grid grid-cols-2 gap-4">
-                <a href="https://kaspi.kz" target="_blank" class="flex flex-col items-center p-5 border-2 border-gray-50 rounded-3xl hover:border-red-500 transition-all hover:bg-red-50 group">
-                    <img src="images/kaspi.png" class="h-16 mb-2" alt="Kaspi">
-                    <span class="text-[12px] font-black text-red-600 uppercase">Kaspi Kz</span>
-                </a>
-                <a href="https://halykbank.kz" target="_blank" class="flex flex-col items-center p-5 border-2 border-gray-50 rounded-3xl hover:border-green-500 transition-all hover:bg-green-50 group">
-                    <img src="images/halyk.png" class="h-16 mb-2" alt="Halyk">
-                    <span class="text-[12px] font-black text-green-600 uppercase">Halyk Bank</span>
-                    
-                <a href="НАПРАВЛЕНИЯ ДОЛГА" target="_blank" class="flex flex-col items-center p-5 border-2 border-gray-50 rounded-3xl hover:border-red-500 transition-all hover:bg-red-50 group">
-                    <span class="text-[12px] font-black text-red-600 italic uppercase">НАЛИЧНЫЕ</span>
-                </a>
+        
+        <h2 class="text-lg md:text-xl font-black italic text-gray-900 mb-6 uppercase text-center tracking-tighter leading-tight">
+            Погашение <span class="text-orange-600">задолженности</span>
+        </h2>
 
-                </a>
-            </div>
+        <div class="bg-gray-50 p-4 md:p-5 rounded-[1.5rem] md:rounded-[2rem] border border-gray-100 mb-5 md:mb-6">
+            <label class="text-[8px] md:text-[9px] font-black uppercase text-gray-400 mb-2 block tracking-widest italic">Сумма к оплате (₸):</label>
+            <input type="number" id="partial-pay-amount" placeholder="Введите сумму" 
+                   class="w-full bg-white border-2 border-orange-100 rounded-xl md:rounded-2xl py-3 md:py-4 px-5 md:px-6 text-xl md:text-2xl font-black text-gray-950 outline-none focus:border-orange-500 transition-all tracking-tighter">
+            <p class="text-[7px] md:text-[8px] text-gray-400 mt-2 uppercase font-bold italic">* Пустое поле = оплата всего долга</p>
         </div>
-        <p class="text-[11px] text-gray-400 text-center italic mb-6">После оплаты отправьте скриншот чека в чат поддержки. ИП зарегистрировано в с. Кулан.</p>
-        <button onclick="closePayment(true)" class="w-full bg-orange-600 text-white py-4 rounded-2xl font-bold hover:bg-orange-700 shadow-lg uppercase tracking-widest">Я оплатил(а)</button>
+        
+        <div class="space-y-3 md:space-y-4">
+            <div class="group w-full flex items-center justify-between p-4 md:p-5 border-2 border-orange-500 bg-orange-50 rounded-2xl md:rounded-3xl transition-all">
+                <div class="flex items-center gap-3 md:gap-4">
+                    <div class="w-10 h-10 md:w-12 md:h-12 bg-orange-600 rounded-xl md:rounded-2xl flex items-center justify-center text-white shadow-lg">
+                        <i class="fas fa-wallet text-lg md:text-xl"></i>
+                    </div>
+                    <div class="flex flex-col items-start">
+                        <span class="font-black italic uppercase text-[10px] md:text-xs text-gray-900">Кошелек Qulan</span>
+                        <span id="modal-wallet-balance" class="text-[9px] md:text-[10px] text-orange-600 font-bold mt-0.5 md:mt-1 italic">Баланс: 0 ₸</span>
+                    </div>
+                </div>
+                <div class="w-5 h-5 md:w-6 md:h-6 rounded-full bg-orange-600 flex items-center justify-center text-white text-[8px] md:text-[10px]">
+                    <i class="fas fa-check"></i>
+                </div>
+            </div>
+
+            <button onclick="window.open('https://wa.me/77054860793')" class="group w-full flex items-center justify-between p-4 md:p-5 border-2 border-gray-50 rounded-2xl md:rounded-3xl hover:border-green-500 active:bg-gray-100 transition-all">
+                <div class="flex items-center gap-3 md:gap-4">
+                    <div class="w-10 h-10 md:w-12 md:h-12 bg-gray-100 group-hover:bg-green-600 rounded-xl md:rounded-2xl flex items-center justify-center text-gray-400 group-hover:text-white transition-colors">
+                        <i class="fas fa-money-bill-wave text-lg md:text-xl"></i>
+                    </div>
+                    <div class="flex flex-col items-start text-left">
+                        <span class="font-black italic uppercase text-[10px] md:text-xs text-gray-900">Наличные</span>
+                        <span class="text-[8px] md:text-[9px] text-gray-400 font-bold mt-0.5 md:mt-1 uppercase italic">Связаться в WhatsApp</span>
+                    </div>
+                </div>
+                <i class="fab fa-whatsapp text-green-500 text-xl md:text-2xl"></i>
+            </button>
+        </div>
+
+        <button onclick="payDebtWithWallet()" class="w-full mt-6 md:mt-8 bg-orange-600 text-white py-4 md:py-5 rounded-[1.5rem] md:rounded-[2rem] font-black uppercase italic text-[10px] md:text-[11px] shadow-xl active:scale-95 transition-all flex items-center justify-center gap-3">
+            <span>Подтвердить оплату</span>
+            <i class="fas fa-arrow-right text-[9px] md:text-[10px]"></i>
+        </button>
     </div>
 </div>
 
@@ -1020,7 +1117,7 @@ window.addEventListener('DOMContentLoaded', () => {
     
     // БӘРІНЕН БҰРЫН ОСЫ ФУНКЦИЯ ТҰРУЫ КЕРЕК
     loadUserData();      
-    
+    renderWallet();
     updateDebtStatus();  
     renderProfileCart(); 
     load2FAStatus();     
@@ -1031,11 +1128,13 @@ window.addEventListener('DOMContentLoaded', () => {
 });
         // --- 1. ТАБТАР ЖҮЙЕСІ ---
         function showTab(event, tabId) {
+            
             const currentId = localStorage.getItem('currentUserId');
             document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
             document.querySelectorAll('.nav-btn').forEach(b => {
                 b.classList.remove('bg-orange-50', 'text-orange-600', 'font-medium');
                 b.classList.add('hover:bg-gray-100');
+                
             });
             const activeTab = document.getElementById(tabId);
             if (activeTab) activeTab.classList.remove('hidden');
@@ -1047,23 +1146,38 @@ window.addEventListener('DOMContentLoaded', () => {
                 localStorage.setItem('certs_read_' + currentId, 'true');
                 renderCertificates();
                 updateMenuBadges(); 
+
             }
         }
 
         // Кошелекті рендер жасау
 function renderWallet() {
-    const balance = localStorage.getItem('userBalance') || 0;
-    const bonuses = localStorage.getItem('userBonuses') || 0;
-    
-    // Экрандағы баланстарды жаңарту
-    const mainBalanceEl = document.getElementById('wallet-balance-main');
-    const bonusEl = document.getElementById('wallet-bonuses');
-    
-    if(mainBalanceEl) mainBalanceEl.innerText = Number(balance).toLocaleString() + ' ₸';
-    if(bonusEl) bonusEl.innerText = Number(bonuses).toLocaleString();
-    
-    // Навигациядағы балансты да жаңарту
-    updateNavBalance(); 
+    // 1. Ең алдымен негізгі users базасын оқимыз
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    // 2. Қазіргі кіріп тұрған адамның ID-ін аламыз
+    const currentId = localStorage.getItem('currentUserId');
+    // 3. Базадан сол адамды табамыз (Ең соңғы жаңарған дерек осында)
+    const user = users.find(u => String(u.id) === String(currentId));
+
+    if (user) {
+        // 4. Бонусты базадағы мәнмен теңестіреміз
+        const bonuses = user.bonus || 0; 
+        const balance = user.userBalance || 0;
+
+        // 5. Сенің HTML-іңдегі ID бойынша экранға шығарамыз
+        const bonusEl = document.getElementById('wallet-bonuses');
+        const mainBalanceEl = document.getElementById('wallet-balance-main');
+        
+        if(bonusEl) {
+            bonusEl.innerText = Number(bonuses).toLocaleString(); // Санды осында жазады
+        }
+        if(mainBalanceEl) {
+            mainBalanceEl.innerText = Number(balance).toLocaleString();
+        }
+        
+        // Навигациядағы балансты да жаңарту
+        updateNavBalance();
+    }
 }
 
 // Пополнить басқанда әдістерді көрсету
@@ -1089,43 +1203,47 @@ function processTopUp(method) {
     }
 }
 
-        // --- 2. GEMINI AI CHAT ENGINE ---
-        const GEMINI_API_KEY = "AIzaSyBU1eWfKxsuIJshtMzUlR4YKucfuRTvWog"; 
-        const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+      async function queryGemini(userMessage) {
+    const GEMINI_API_KEY = "AIzaSyBJyIA13WXX0xEYk7gM1oPs8h_K4W1M8PM"; 
+    // Назар аудар: URL-ден модель атын алып тастап, тек жалпы нүктені қалдырдық
+    const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
-        function toggleAIChat() { 
-            document.getElementById('ai-chat-window').classList.toggle('hidden'); 
+    const storedData = localStorage.getItem('qulanProducts'); 
+    const products = storedData ? JSON.parse(storedData) : [];
+    const productContext = products.map(p => `- ${p.name}: ${p.price}₸`).join('\n');
+
+    try {
+        const response = await fetch(GEMINI_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                contents: [{
+                    parts: [{
+                        text: `Сен QulanShop сатушысысың. Мына тауарлар тізіміне қарап қазақша жауап бер:\n${productContext}\n\nКлиент: ${userMessage}`
+                    }]
+                }]
+            })
+        });
+
+        const data = await response.json();
+
+        // Егер бұл да 404 берсе, біз "gemini-pro" деген ең алғашқы модельді қолданамыз
+        if (data.error && data.error.code === 404) {
+             const fallbackUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`;
+             const fallbackRes = await fetch(fallbackUrl, {
+                 method: "POST",
+                 headers: { "Content-Type": "application/json" },
+                 body: JSON.stringify({ contents: [{ parts: [{ text: userMessage }] }] })
+             });
+             const fallbackData = await fallbackRes.json();
+             return fallbackData.candidates[0].content.parts[0].text;
         }
 
-        async function queryGemini(userMessage) {
-            const systemInstruction = `
-                Ты — Qulan AI, официальный помощник интернет-магазина QulanShop (село Кулан). 
-                Твоя задача: помогать клиентам. 
-                Информация о магазине: 
-                - График: 09:00 - 20:00 (ежедневно). 
-                - Доставка: по всему району Кулан. 
-                - Владелец: ИП "QulanShop".
-                - Оплата: Kaspi Pay, Halyk Bank.
-                Отвечай кратко, дружелюбно, используй эмодзи. 
-                Если клиент спрашивает на казахском, отвечай на казахском. Если на русском — на русском.
-                Текст пользователя: ${userMessage}
-            `;
-
-            try {
-                const response = await fetch(GEMINI_URL, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: systemInstruction }] }]
-                    })
-                });
-                const data = await response.json();
-                return data.candidates[0].content.parts[0].text;
-            } catch (e) {
-                return "Кешіріңіз, байланыс үзілді. Қайта байқап көріңізші. 🛠️";
-            }
-        }
-
+        return data.candidates[0].content.parts[0].text;
+    } catch (e) {
+        return "Жүйе қайта жүктелуде, сәлден соң жазыңыз. ✨";
+    }
+}
         async function sendMessage() {
             const input = document.getElementById('chat-input');
             const container = document.getElementById('chat-messages');
@@ -1292,45 +1410,67 @@ function processTopUp(method) {
         }
 
         // --- 5. ПРОФИЛЬ ДЕРЕКТЕРІН БАСҚАРУ ---
-        function loadUserData() {
-            const users = JSON.parse(localStorage.getItem('users')) || [];
-            const currentId = localStorage.getItem('currentUserId');
-            const currentUser = users.find(u => u.id == currentId);
+       function loadUserData() {
+    // 1. ДЕРЕКТЕРДІ ОҚУ
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    const currentId = localStorage.getItem('currentUserId');
+    const userJson = localStorage.getItem('currentUser');
+    
+    // БАЗАДАН ҚОЛДАНУШЫНЫ ТАБУ (Сенің жазған логикаң)
+    const currentUser = users.find(u => u.id == currentId);
 
-            if (currentUser) {
-                if (document.getElementById('user-fullname-header')) 
-                    document.getElementById('user-fullname-header').innerText = currentUser.name;
-                
-                if (document.getElementById('user-fullname-input')) 
-                    document.getElementById('user-fullname-input').value = currentUser.name;
-
-                if (document.getElementById('user-phone-input')) 
-                    document.getElementById('user-phone-input').value = currentUser.phone || '';
-
-                if (document.getElementById('user-email-input')) 
-                    document.getElementById('user-email-input').value = currentUser.email || '';
-
-                if (document.getElementById('user-address-input')) 
-                    document.getElementById('user-address-input').value = currentUser.address || '';
-            }
-        }
-
-        function loadUserData() {
-    try {
-        const userJson = localStorage.getItem('currentUser');
+    // 2. ИНТЕРФЕЙСКЕ ШЫҒАРУ (Сенің мәтіндерің мен ID-лерің)
+    if (currentUser) {
+        if (document.getElementById('user-fullname-header')) 
+            document.getElementById('user-fullname-header').innerText = currentUser.name;
         
-        if (!userJson) throw new Error("Деректер бос"); // Егер дерек мүлдем жоқ болса
+        if (document.getElementById('user-fullname-input')) 
+            document.getElementById('user-fullname-input').value = currentUser.name;
+
+        if (document.getElementById('user-phone-input')) 
+            document.getElementById('user-phone-input').value = currentUser.phone || '';
+
+        if (document.getElementById('user-email-input')) 
+            document.getElementById('user-email-input').value = currentUser.email || '';
+
+        if (document.getElementById('user-address-input')) 
+            document.getElementById('user-address-input').value = currentUser.address || '';
+        
+        // ФОТОНЫ ШЫҒАРУ (Артық емес, қажетті код)
+        const avatarImg = document.getElementById('user-avatar');
+        if (avatarImg) {
+            avatarImg.src = currentUser.photo || "https://ui-avatars.com/api/?name=" + encodeURIComponent(currentUser.name) + "&background=random";
+        }
+    }
+
+    // 3. БАЛАНСТЫ ТЕҢЕСТІРУ (Сенің қосқан бөлімің)
+    if (userJson) {
+        const sessionUser = JSON.parse(userJson);
+        const dbUser = users.find(u => String(u.id) === String(sessionUser.id));
+        
+        if (dbUser) {
+            // КОШЕЛЕККЕ АҚШАНЫ ОСЫ ЖЕРДЕ ТЕҢЕСТІРЕМІЗ
+            localStorage.setItem('userBalance', dbUser.userBalance || 0);
+            
+            // Навигациядағы балансты бірден жаңарту
+            if (typeof updateNavBalance === 'function') updateNavBalance();
+        }
+    }
+
+    // 4. ҚАТЕЛЕРДІ ТЕКСЕРУ (Сенің try-catch блогың)
+    try {
+        if (!userJson) throw new Error("Деректер бос");
 
         const user = JSON.parse(userJson);
-        
-        // ... ары қарай атын шығару логикасы
         const displayName = user.name || "Пользователь";
-        document.getElementById('user-fullname-header').innerText = displayName;
+        
+        if (document.getElementById('user-fullname-header'))
+            document.getElementById('user-fullname-header').innerText = displayName;
 
     } catch (e) {
         console.error("Деректерді оқу мүмкін болмады:", e);
         // Егер деректер қате болса, сессияны тазалап, логин бетіне жібереміз
-        handleLogout(); 
+        if (typeof handleLogout === 'function') handleLogout(); 
     }
 }
 
@@ -1355,9 +1495,7 @@ function uploadAvatar(input) {
 
         reader.readAsDataURL(input.files[0]);
     }
-}
 
-function loadUserData() {
     // 1. LocalStorage-тан деректі алу
     const userJson = localStorage.getItem('currentUser');
     
@@ -1397,7 +1535,9 @@ function loadUserData() {
     } else {
         window.location.assign('auth.html');
     }
+
 }
+
 
         // --- 6. ПАРОЛЬ ЖӘНЕ ҚАУІПСІЗДІК ---
         function togglePass(inputId, btn) {
@@ -1692,6 +1832,125 @@ function loadUserData() {
             document.body.style.overflow = 'auto';
         }
 
+        // --- 13. ҚАРЫЗДЫ ӨТЕУ ЖҮЙЕСІ ---
+
+// Модальканы ашу
+function openPayment() {
+    const modal = document.getElementById('payment-modal');
+    const balance = localStorage.getItem('userBalance') || 0;
+    const balanceEl = document.getElementById('modal-wallet-balance');
+    
+    if (balanceEl) balanceEl.innerText = `Баланс: ${Number(balance).toLocaleString()} ₸`;
+    
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+// Модальканы жабу
+function closePayment(isPaid = false) {
+    const modal = document.getElementById('payment-modal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+    document.body.style.overflow = 'auto';
+}
+
+// Төлем жасау және ақшаны тексеру
+async function payDebtWithWallet() {
+    const currentId = localStorage.getItem('currentUserId');
+    let users = JSON.parse(localStorage.getItem('users')) || [];
+    let userIndex = users.findIndex(u => String(u.id) === String(currentId));
+
+    if (userIndex === -1) return;
+
+    const user = users[userIndex];
+    const totalDebt = Number(user.debt || 0);
+    const balance = Number(user.userBalance || 0);
+    
+    // Инпуттан соманы аламыз
+    const payInput = document.getElementById('partial-pay-amount');
+    let amountToPay = payInput.value ? Number(payInput.value) : totalDebt;
+
+    // 1. Соманың дұрыстығын тексеру
+    if (amountToPay <= 0) {
+        Swal.fire({ text: 'Введите сумму больше 0', icon: 'warning', target: document.getElementById('payment-modal') });
+        return;
+    }
+
+    if (amountToPay > totalDebt) {
+        Swal.fire({ text: 'Сумма превышает ваш долг', icon: 'error', target: document.getElementById('payment-modal') });
+        return;
+    }
+
+    // 2. Балансты тексеру
+    if (balance < amountToPay) {
+        Swal.fire({
+            target: document.getElementById('payment-modal'),
+            html: `
+                <div class="p-2 text-center">
+                    <div class="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fas fa-times text-red-500 text-2xl"></i></div>
+                    <h2 class="text-lg font-black uppercase text-gray-950 mb-2">ОШИБКА!</h2>
+                    <p class="text-[10px] font-bold text-gray-400 uppercase mb-4">Недостаточно средств</p>
+                    <div class="bg-gray-50 p-4 rounded-2xl border mb-4 text-left">
+                        <div class="flex justify-between text-[10px] mb-1"><span>БАЛАНС:</span><span class="font-black text-red-600">${balance.toLocaleString()} ₸</span></div>
+                        <div class="flex justify-between text-[10px]"><span>НУЖНО:</span><span class="font-black">${amountToPay.toLocaleString()} ₸</span></div>
+                    </div>
+                    <button onclick="Swal.close()" class="w-full bg-orange-600 text-white py-3 rounded-xl font-black uppercase text-[10px]">ПОНЯТНО</button>
+                </div>
+            `,
+            showConfirmButton: false,
+            customClass: { popup: 'rounded-[2rem]' }
+        });
+        return;
+    }
+
+    // 3. Төлемді растау
+    const confirm = await Swal.fire({
+        target: document.getElementById('payment-modal'),
+        title: 'ПОДТВЕРЖДЕНИЕ',
+        text: `Списать ${amountToPay.toLocaleString()} ₸?`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#ea580c',
+        confirmButtonText: 'ДА, ОПЛАТИТЬ',
+        cancelButtonText: 'ОТМЕНА',
+        customClass: { popup: 'rounded-[2rem]' }
+    });
+
+    if (confirm.isConfirmed) {
+        // Есептеу
+        users[userIndex].userBalance -= amountToPay;
+        users[userIndex].debt -= amountToPay;
+
+        // Егер қарыз толық жабылса
+        if (users[userIndex].debt <= 0) {
+            users[userIndex].debt = 0;
+            users[userIndex].debtDate = null;
+        }
+
+        // Сақтау
+        localStorage.setItem('users', JSON.stringify(users));
+        localStorage.setItem('currentUser', JSON.stringify(users[userIndex]));
+        localStorage.setItem('userBalance', users[userIndex].userBalance);
+
+        // Интерфейсті жаңарту
+        renderWallet();
+        updateDebtStatus();
+        updateMenuBadges();
+        updateNavBalance();
+        payInput.value = '';
+        closePayment(false);
+
+        Swal.fire({
+            icon: 'success',
+            title: 'ОПЛАТА ПРИНЯТА',
+            text: `Остаток долга: ${users[userIndex].debt.toLocaleString()} ₸`,
+            confirmButtonColor: '#ea580c',
+            customClass: { popup: 'rounded-[2rem]' }
+        });
+    }
+}
+
         async function downloadPDF(cert) {
             const element = document.getElementById('pdf-receipt');
             const btn = document.getElementById('download-pdf-btn');
@@ -1875,6 +2134,252 @@ showTab = function(event, tabId) {
     if (typeof originalShowTab === 'function') originalShowTab(event, tabId);
     if (tabId === 'tab-orders') renderMyOrders();
 };
+
+
+// Реферал жүйесін іске қосу
+function initReferralSystem() {
+    const userJson = localStorage.getItem('currentUser');
+    if (!userJson) return;
+    const user = JSON.parse(userJson);
+
+    // Ссылканы жасау: Гитхабта 404 бермеуі үшін ең дұрыс жолы
+    const currentUrl = window.location.href;
+    const refLink = currentUrl.substring(0, currentUrl.lastIndexOf('/') + 1) + 'auth.html?ref=' + (user.id || '123');
+    
+    const linkInput = document.getElementById('referral-link');
+    if (linkInput) {
+        linkInput.value = refLink;
+    }
+
+    // Статистиканы жаңарту
+    const countDisp = document.getElementById('ref-count-display');
+    const earnedDisp = document.getElementById('ref-earned-display');
+    
+    if (countDisp) countDisp.innerText = user.referralCount || 0;
+    if (earnedDisp) earnedDisp.innerText = (user.referralEarned || 0) + ' ₸';
+}
+
+function copyReferralLink() {
+    const linkInput = document.getElementById('referral-link');
+    if (!linkInput) return;
+    
+    // iPhone мен Android-та 100% көшіру үшін заманауи жолы
+    linkInput.select();
+    linkInput.setSelectionRange(0, 99999); // iOS үшін маңызды
+
+    try {
+        navigator.clipboard.writeText(linkInput.value).then(() => {
+            showCopySuccess();
+        });
+    } catch (err) {
+        document.execCommand('copy'); // Ескі браузерлерге арналған қосалқы жол
+        showCopySuccess();
+    }
+}
+
+// Хабарлама шығару функциясы
+function showCopySuccess() {
+    Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'success',
+        title: 'Ссылка скопирована! 🚀',
+        showConfirmButton: false,
+        timer: 1500,
+        background: '#1e293b',
+        color: '#fff'
+    });
+}
+
+// showTab функциясын реферал үшін жаңарту
+const originalShowTabWithRef = showTab;
+showTab = function(event, tabId) {
+    if (typeof originalShowTabWithRef === 'function') originalShowTabWithRef(event, tabId);
+    if (tabId === 'tab-referral') initReferralSystem();
+};
+
+function loadUserProfile() {
+    // Міндетті түрде localStorage-тан ең соңғы мәнді алу керек
+    const latestBalance = localStorage.getItem('userBalance') || 0;
+    const balanceDisplay = document.getElementById('user-balance-display');
+    
+    if (balanceDisplay) {
+        balanceDisplay.innerText = Number(latestBalance).toLocaleString() + " ₸";
+    }
+}
+// Бұл функцияны window.onload кезінде шақыруды ұмытпа
+
+
+function checkNewNotifications() {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (!currentUser || !currentUser.notifications) return;
+
+    // Оқылмаған хабарламаларды табу
+    const newNotes = currentUser.notifications.filter(n => n.isNew);
+
+    if (newNotes.length > 0) {
+        newNotes.forEach(note => {
+            // SweetAlert арқылы хабарлама шығару
+            Swal.fire({
+                title: 'Жаңа хабарлама! 📩',
+                text: note.message,
+                icon: 'info',
+                confirmButtonColor: '#ea580c'
+            });
+
+            // Хабарламаны "оқылған" деп белгілеу
+            note.isNew = false;
+        });
+
+        // Пайдаланушының деректерін базада жаңарту (оқылған деп белгілеу үшін)
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+        const idx = users.findIndex(u => String(u.id) === String(currentUser.id));
+        if (idx !== -1) {
+            users[idx].notifications = currentUser.notifications;
+            localStorage.setItem('users', JSON.stringify(users));
+            localStorage.setItem('currentUser', JSON.stringify(users[idx]));
+        }
+    }
+}
+
+// Профиль ашылғанда тексеру
+window.addEventListener('DOMContentLoaded', checkNewNotifications);
+
+
+
+function showEChack(trxId) {
+    const user = JSON.parse(localStorage.getItem('currentUser'));
+    const trx = user.transactions.find(t => t.id === trxId);
+
+    if (!trx) return;
+
+    Swal.fire({
+        title: '<span class="italic font-black uppercase tracking-tighter">Qulan<span class="text-orange-600">Shop</span> Чек</span>',
+        html: `
+            <div class="text-left space-y-2 border-t border-dashed border-gray-200 pt-4 mt-4 italic">
+                <div class="flex justify-between text-[10px] font-bold">
+                    <span class="text-gray-400 uppercase">ID ТРАНЗАКЦИИ:</span>
+                    <span>${trx.id}</span>
+                </div>
+                <div class="flex justify-between text-[10px] font-bold">
+                    <span class="text-gray-400 uppercase">ДАТА:</span>
+                    <span>${trx.date}</span>
+                </div>
+                <div class="flex justify-between text-[10px] font-bold">
+                    <span class="text-gray-400 uppercase">КЛИЕНТ:</span>
+                    <span>${user.name}</span>
+                </div>
+                <div class="flex justify-between text-[10px] font-bold">
+                    <span class="text-gray-400 uppercase">ОПЕРАЦИЯ:</span>
+                    <span>${trx.description}</span>
+                </div>
+                <div class="border-t border-dashed border-gray-200 pt-2 mt-2 flex justify-between items-center">
+                    <span class="text-xs font-black uppercase">ИТОГО:</span>
+                    <span class="text-xl font-black">${Number(trx.amount).toLocaleString()} ₸</span>
+                </div>
+                <div class="text-center pt-4">
+                    <div class="inline-block p-2 bg-gray-50 rounded-lg">
+                        <i class="fas fa-qrcode text-4xl opacity-20"></i>
+                    </div>
+                    <p class="text-[8px] text-gray-400 mt-2">СПАСИБО ЗА ПОКУПКУ!</p>
+                </div>
+            </div>
+        `,
+        confirmButtonText: 'ЖАБУ',
+        confirmButtonColor: '#000',
+        customClass: { popup: 'rounded-[2rem]' }
+    });
+}
+
+// 1. Тапсырыстарды батырмамен бірге шығару функциясы
+function renderUserOrders() {
+    const orders = JSON.parse(localStorage.getItem('orders')) || [];
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    const container = document.getElementById('orders-container'); // Осы ID бар ма тексер, болмаса өзгеріс енгіз
+    
+
+    if (!container || !currentUser) return;
+
+    // Тек осы қолданушының тапсырыстарын сүзіп алу
+    const myOrders = orders.filter(o => String(o.userId) === String(currentUser.id));
+
+    if (myOrders.length === 0) {
+        container.innerHTML = '<p class="text-center text-gray-400 italic py-10">Тапсырыстар әлі жоқ</p>';
+        return;
+    }
+
+    container.innerHTML = myOrders.map(order => {
+        // Чек батырмасы тек "Доставлено" немесе "Оплачено" болса шығады
+        const canShowCheck = order.status === 'Доставлено' || order.status === 'Оплачено' || order.isPaid;
+        
+        const checkBtn = canShowCheck 
+            ? `<button onclick="showOrderReceipt('${order.id}')" class="ml-2 bg-orange-50 text-orange-600 border border-orange-200 px-3 py-1 rounded-lg text-[10px] font-black uppercase italic hover:bg-orange-600 hover:text-white transition-all">
+                <i class="fas fa-file-invoice-dollar mr-1"></i> Чек
+               </button>` 
+            : '';
+
+        return `
+            <div class="bg-white p-4 rounded-3xl border border-gray-100 mb-4 shadow-sm">
+                <div class="flex justify-between items-start mb-3">
+                    <div>
+                        <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">ID: #ORD-${order.id}</p>
+                        <h3 class="font-black italic uppercase text-slate-800 flex items-center">
+                            ${order.productName} (x${order.quantity || 1})
+                            ${checkBtn}
+                        </h3>
+                    </div>
+                    <span class="text-[9px] font-black px-3 py-1 rounded-full uppercase italic ${order.status === 'Доставлено' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}">
+                        ${order.status}
+                    </span>
+                </div>
+                <div class="flex justify-between items-end border-t border-gray-50 pt-3">
+                    <p class="text-[10px] text-gray-400 font-bold">${order.date || ''}</p>
+                    <p class="font-black text-lg text-slate-900">${Number(order.totalPrice).toLocaleString()} ₸</p>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// 2. Чекті SweetAlert арқылы шығару (Алдыңғы берген кодым)
+function showOrderReceipt(orderId) {
+    const orders = JSON.parse(localStorage.getItem('orders')) || [];
+    const order = orders.find(o => String(o.id) === String(orderId));
+
+    if (!order) return;
+
+    Swal.fire({
+        title: '<div class="font-black italic uppercase">Qulan<span class="text-orange-600">Shop</span></div>',
+        html: `
+            <div class="text-left mt-4 border-t border-dashed border-gray-300 pt-4 italic">
+                <div class="flex justify-between text-[10px] font-bold mb-2">
+                    <span class="text-gray-400 uppercase">ЗАКАЗ №:</span>
+                    <span>${order.id}</span>
+                </div>
+                <div class="flex justify-between text-[10px] font-bold mb-4">
+                    <span class="text-gray-400 uppercase">ДАТА:</span>
+                    <span>${order.date || '---'}</span>
+                </div>
+                <div class="bg-gray-50 p-3 rounded-xl mb-4">
+                    <div class="flex justify-between font-black text-sm uppercase">
+                        <span>${order.productName}</span>
+                        <span>${Number(order.totalPrice).toLocaleString()} ₸</span>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center border-t border-gray-200 pt-4">
+                    <span class="font-black text-xl uppercase italic">ИТОГО:</span>
+                    <span class="text-2xl font-black text-orange-600">${Number(order.totalPrice).toLocaleString()} ₸</span>
+                </div>
+            </div>
+        `,
+        confirmButtonText: 'ЖАБУ',
+        confirmButtonColor: '#000',
+        customClass: { popup: 'rounded-[2rem]' }
+    });
+}
+
+// БЕТ ЖҮКТЕЛГЕНДЕ ІСКЕ ҚОСУ
+window.addEventListener('DOMContentLoaded', renderUserOrders);
 
     </script>
 </html>
