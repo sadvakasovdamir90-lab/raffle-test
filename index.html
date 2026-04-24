@@ -5,8 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QulanShop — Интернет-магазин</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="apple-touch-icon" href="icon.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#ea580c">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+
+    
+
+<script>
+  // Service Worker-ді тіркеу
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js');
+  }
+
+  // "Орнату" батырмасын шығару логикасы
+  let deferredPrompt;
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    // Осы жерде өзіңнің арнайы батырмаңды көрсетуге болады
+    console.log("QulanShop қосымшасын орнатуға дайын!");
+  });
+</script>
     <style>
         .slider-container { display: flex; transition: transform 0.5s ease-in-out; }
         .slide { min-width: 100%; }
@@ -177,6 +201,128 @@
     pointer-events: auto;
 }
 
+
+/* Мобильді адаптация */
+@media (max-width: 768px) {
+    #notify-dropdown {
+        position: fixed !important;
+        top: auto !important;
+        bottom: 20px !important; /* Астыңғы мәзірден жоғары */
+        left: 15px !important;
+        right: 15px !important;
+        width: auto !important;
+        max-width: none !important;
+        border-radius: 2.5rem !important;
+    }
+}
+
+/* Категория чиптері */
+.notify-tab {
+    font-size: 8px; font-weight: 900; text-transform: uppercase;
+    padding: 7px 14px; border-radius: 14px; background: #f1f5f9;
+    color: #94a3b8; cursor: pointer; white-space: nowrap; transition: 0.3s;
+}
+.notify-tab.active { background: #ea580c; color: white; box-shadow: 0 5px 15px rgba(234,88,12,0.2); }
+
+/* Хабарлама карточкасы */
+.notify-card {
+    background: #f8fafc; border: 1px solid #f1f5f9;
+    border-radius: 2rem; padding: 15px; cursor: pointer; transition: 0.2s;
+}
+.notify-card:hover { border-color: #ea580c; background: white; transform: translateY(-2px); }
+
+/* Скролл жасыру */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.custom-scroll::-webkit-scrollbar { width: 3px; }
+.custom-scroll::-webkit-scrollbar-thumb { background: #f1f5f9; }
+
+/* Хабарламалар тізімінің астына бос орын қосу */
+#notify-list {
+    padding-bottom: 80px !important; /* Робот жауып қалмауы үшін 80px орын қалдырамыз */
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Хабарлама карточкасының ішіндегі мәтін толық оқылуы үшін */
+.notify-card p {
+    word-break: break-word; /* Ұзын сөздерді келесі жолға түсіреді */
+    white-space: normal;
+}
+
+/* Уведомление панелінің негізгі стилі (ПК үшін) */
+/* Базалық стиль (ПК және Мобильді үшін ортақ негіз) */
+.notify-dropdown-panel {
+    position: absolute;
+    top: 100%; /* Батырманың дәл астынан басталады */
+    right: 0;
+    margin-top: 0.75rem;
+    width: 300px;
+    background-color: white;
+    border-radius: 1.5rem;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    border: 1px solid #f1f5f9;
+    z-index: 9999;
+    overflow: hidden;
+    transform-origin: top right;
+    animation: notifyFadeIn 0.2s ease-out;
+}
+
+/* Мобильді телефондар үшін арнайы түзету (iPhone/Android) */
+@media (max-width: 768px) {
+    .notify-dropdown-panel {
+        right: -10px; /* Экранның шетіне тіреліп қалмауы үшін азғантай жылжыту */
+        width: 280px; /* Телефонда сәл жинақырақ */
+    }
+}
+
+@keyframes notifyFadeIn {
+    from { opacity: 0; transform: scale(0.95) translateY(-10px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Категория табтары */
+.notify-tab {
+    font-size: 9px; font-weight: 800;
+    padding: 6px 12px; border-radius: 10px; background: #f1f5f9;
+    color: #94a3b8; cursor: pointer; white-space: nowrap; transition: 0.3s;
+}
+.notify-tab.active { background: #ea580c; color: white; }
+
+
+/* Негізгі панель стилі (Dropdown) */
+/* Уведомления терезесін батырманың астына байлау */
+.notify-dropdown-top {
+    position: absolute !important;
+    top: 110% !important; /* Батырмадан сәл төмен */
+    right: 0 !important;
+    width: 300px;
+    background: white;
+    border-radius: 1.5rem;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+    border: 1px solid #f1f5f9;
+    z-index: 9999 !important; /* Роботтың бетінде тұруы үшін */
+    overflow: hidden;
+    transform-origin: top right;
+}
+
+/* Мобильді телефондарда экран шетіне тірелмеуі үшін */
+@media (max-width: 768px) {
+    .notify-dropdown-top {
+        right: -50px !important; 
+        width: 280px !important;
+    }
+}
+
+/* Анимация */
+#notify-dropdown:not(.hidden) {
+    animation: notifyDropDown 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes notifyDropDown {
+    from { opacity: 0; transform: translateY(-10px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
     </style>
 </head>
 <body class="bg-gray-50 font-sans text-gray-800">
@@ -199,17 +345,6 @@
             </div>
 
     <div class="flex items-center space-x-2 md:space-x-8 order-2 md:order-3">
-        
-        <div class="relative shrink-0">
-            <div onclick="toggleLangMenu()" class="text-[10px] md:text-sm font-bold cursor-pointer hover:text-orange-600 border px-2 py-1 md:px-3 md:py-1.5 rounded-lg flex items-center bg-white shadow-sm italic">
-                <i class="fas fa-globe mr-1 md:mr-2 text-orange-500"></i>
-                <span id="current-lang-text">Рус</span>
-            </div>
-            <div id="lang-menu" class="dropdown-animate absolute top-full right-0 mt-2 w-32 bg-white rounded-xl shadow-xl border border-gray-100 z-[100]">
-                <div onclick="setLanguage('ru')" class="px-4 py-3 hover:bg-orange-50 cursor-pointer border-b border-gray-50 font-medium italic">Русский</div>
-                <div onclick="setLanguage('kz')" class="px-4 py-3 hover:bg-orange-50 cursor-pointer font-medium italic">Қазақша</div>
-            </div>
-        </div>
 
         <button onclick="checkAuth('profile.html')" class="flex flex-col items-center hover:text-orange-600 transition text-gray-600">
             <i class="far fa-user text-lg md:text-xl"></i>
@@ -220,6 +355,26 @@
             <i class="far fa-heart text-lg md:text-xl"></i>
             <span class="text-[9px] md:text-[10px] mt-1 font-medium italic">Избранное</span>
         </button>
+
+<div id="notify-wrapper" class="hidden relative">
+    <button onclick="toggleNotifyMenu()" class="flex flex-col items-center outline-none group">
+        <div class="relative">
+            <i class="far fa-bell text-xl md:text-2xl text-gray-600"></i>
+            <div id="notify-dot" class="hidden absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-red-600 rounded-full border-2 border-white animate-pulse"></div>
+        </div>
+        <span class="text-[10px] md:text-[11px] mt-1 font-bold italic text-gray-600">Уведомления</span>
+    </button>
+
+    <div id="notify-dropdown" class="hidden notify-dropdown-top">
+        <div class="p-5 border-b border-gray-50 bg-gray-50/50">
+            <h4 class="font-black italic text-[12px] text-slate-800">Центр уведомлений</h4>
+            <div class="flex gap-2 mt-3 overflow-x-auto no-scrollbar" id="notify-tabs"></div>
+        </div>
+        <div id="notify-list" class="max-h-[350px] overflow-y-auto p-4 space-y-3 bg-white custom-scroll">
+            <div class="py-12 text-center text-gray-300 italic text-[10px] font-bold uppercase">Уведомлений нет</div>
+        </div>
+    </div>
+</div>
 
         <button onclick="checkAuth('cart.html')" class="flex flex-col items-center hover:text-orange-600 transition text-gray-600 relative">
             <i class="fas fa-shopping-cart text-lg md:text-xl"></i>
@@ -238,6 +393,8 @@
                class="w-full h-10 bg-gray-50 md:bg-white border-2 border-gray-100 rounded-xl pl-10 pr-4 outline-none focus:border-orange-500 transition text-sm md:text-base" 
                placeholder="Поиск товаров...">
     </div>
+
+    
 </div>
 </header>
 
@@ -424,6 +581,8 @@
 
 
 <script>
+
+    
     // Тауар бетіне өту функциясы
     function goToProduct(url) {
         window.location.href = url;
@@ -491,7 +650,9 @@
                     <li><a href="delivery.html" class="footer-link hover:text-orange-600 transition-all">Доставка и оплата</a></li>
                     <li><a href="return.html" class="footer-link hover:text-orange-600 transition-all">Возврат товара</a></li>
                     <li><a href="gift-cards.html" class="footer-link hover:text-orange-600 transition-all">Подарочные карты</a></li>
+                    <li><a href="news.html" class="footer-link hover:text-orange-600 transition-all">Новости</a></li>
                 </ul>
+                
             </div>
 
             <div>
@@ -533,39 +694,49 @@
         </div>
     </button>
 
-    <div id="ai-chat-window" class="hidden absolute bottom-20 right-0 w-[350px] md:w-[400px] bg-white rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-gray-100 overflow-hidden flex flex-col transform transition-all duration-300">
-        <div class="bg-gradient-to-r from-orange-600 to-orange-500 p-5 text-white flex justify-between items-center shadow-lg">
-            <div class="flex items-center space-x-3">
-                <div class="bg-white/20 p-2 rounded-lg">
-                    <i class="fas fa-robot text-2xl"></i>
-                </div>
-                <div>
-                    <p class="font-bold italic text-sm leading-none">Qulan AI Assistant</p>
-                    <p class="text-[10px] text-orange-100 mt-1 italic">Онлайн • Көмекке дайын</p>
-                </div>
+ <div id="ai-chat-window" class="hidden absolute bottom-20 right-0 w-[350px] md:w-[400px] bg-white rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-gray-100 overflow-hidden flex flex-col transform transition-all duration-300">
+    <div class="bg-gradient-to-r from-orange-600 to-orange-500 p-5 text-white flex justify-between items-center shadow-lg">
+        <div class="flex items-center space-x-3">
+            <div class="bg-white/20 p-2 rounded-lg">
+                <i class="fas fa-robot text-2xl"></i>
             </div>
-            <button onclick="toggleAIChat()" class="hover:rotate-90 transition-transform duration-300 p-2 text-xl">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        
-        <div id="chat-messages" class="h-96 overflow-y-auto p-5 space-y-4 bg-gray-50/50 text-sm italic">
-            <div class="flex justify-start">
-                <div class="bg-white p-4 rounded-2xl rounded-tl-none shadow-sm border border-gray-100 max-w-[85%] text-gray-700 leading-relaxed">
-                    Қайырлы күн! ✨ Мен **Qulan AI** көмекшісімін. <br><br>Тауар іздеуге, жеткізу туралы білуге немесе менеджермен байланысуға көмектесе аламын. Не істейміз?
-                </div>
+            <div>
+                <p class="font-bold italic text-sm leading-none">Qulan AI Assistant</p>
+                <p class="text-[10px] text-orange-100 mt-1 italic">Онлайн • Көмекке дайын</p>
             </div>
         </div>
 
-        <div class="p-4 bg-white border-t border-gray-100">
-            <div class="relative flex items-center">
-                <input type="text" id="chat-input" 
-                    class="w-full border-2 border-gray-100 rounded-2xl py-3 pl-4 pr-12 outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-50 transition-all text-sm" 
-                    placeholder="Сұрағыңызды жазыңыз...">
-                <button onclick="sendMessage()" class="absolute right-2 bg-orange-600 text-white w-10 h-10 rounded-xl hover:bg-orange-700 transition flex items-center justify-center">
-                    <i class="fas fa-paper-plane"></i>
-                </button>
+        <div class="flex items-center space-x-1">
+            <button onclick="startOnlineCall()" title="Онлайн қоңырау" class="hover:bg-white/20 p-2 rounded-xl transition-colors group relative">
+                <i class="fas fa-phone-alt text-lg animate-pulse"></i>
+                <span class="absolute -top-1 -right-1 flex h-3 w-3">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500 border-2 border-white"></span>
+                </span>
+            </button>
+
+            <button onclick="toggleAIChat()" class="hover:rotate-90 hover:bg-white/20 p-2 rounded-xl transition-all duration-300 text-xl">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+    
+    <div id="chat-messages" class="h-96 overflow-y-auto p-5 space-y-4 bg-gray-50/50 text-sm italic">
+        <div class="flex justify-start">
+            <div class="bg-white p-4 rounded-2xl rounded-tl-none shadow-sm border border-gray-100 max-w-[85%] text-gray-700 leading-relaxed">
+                Қайырлы күн! ✨ Мен **Qulan AI** көмекшісімін. <br><br>Тауар іздеуге немесе **онлайн қоңырау** арқылы сөйлесуге көмектесе аламын. Не істейміз?
             </div>
+        </div>
+    </div>
+
+    <div class="p-4 bg-white border-t border-gray-100">
+        <div class="relative flex items-center">
+            <input type="text" id="chat-input" 
+                class="w-full border-2 border-gray-100 rounded-2xl py-3 pl-4 pr-12 outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-50 transition-all text-sm" 
+                placeholder="Сұрағыңызды жазыңыз...">
+            <button onclick="sendMessage()" class="absolute right-2 bg-orange-600 text-white w-10 h-10 rounded-xl hover:bg-orange-700 transition flex items-center justify-center">
+                <i class="fas fa-paper-plane"></i>
+            </button>
         </div>
     </div>
 </div>
@@ -611,7 +782,22 @@
     </div>
 </div>
 
-
+<div id="call-modal" class="hidden fixed inset-0 bg-black/80 z-[9999] flex items-center justify-center backdrop-blur-sm">
+    <div class="bg-[#1e293b] p-8 rounded-[3rem] border border-slate-700 text-center w-80 shadow-2xl">
+        <div class="relative w-24 h-24 mx-auto mb-6">
+            <div class="absolute inset-0 bg-green-500 rounded-full animate-ping opacity-20"></div>
+            <div class="relative bg-green-500 w-full h-full rounded-full flex items-center justify-center shadow-lg shadow-green-500/50">
+                <i class="fas fa-phone-alt text-3xl text-white"></i>
+            </div>
+        </div>
+        <h3 id="call-status" class="text-white font-black italic uppercase mb-2">Звонок...</h3>
+        <p class="text-slate-500 text-[10px] uppercase font-bold mb-8">QulanShop Online</p>
+        
+        <button onclick="endCall()" class="bg-red-500 text-white w-16 h-16 rounded-full hover:scale-110 transition-all shadow-lg shadow-red-500/20 flex items-center justify-center mx-auto">
+            <i class="fas fa-phone-slash text-2xl rotate-[135deg]"></i>
+        </button>
+    </div>
+</div>
 
 <!-- Скрипт бөлімі -->
 <script>
@@ -1129,8 +1315,201 @@ function filterByCategory(categoryName) {
     toggleCategories();
 }
 
+// 1. Тіркелгенін тексеріп, батырманы көрсету
+document.addEventListener('DOMContentLoaded', () => {
+    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    const wrapper = document.getElementById('notify-wrapper');
+    
+    if (isLoggedIn && wrapper) {
+        // Егер логин жасалған болса, hidden класын өшіреді
+        wrapper.classList.remove('hidden');
+        wrapper.style.display = 'flex'; // Тікелей көрсету
+        
+        // Нүктені тексеру
+        const list = JSON.parse(localStorage.getItem('qulanshop_notifications')) || [];
+        if (list.length > 0) document.getElementById('notify-dot')?.classList.remove('hidden');
+    }
+});
+
+// --- УВЕДОМЛЕНИЯ ЛОГИКАСЫ ---
+
+// 1. Менюді ашу/жабу функциясы
+function toggleNotifyMenu() {
+    const dropdown = document.getElementById('notify-dropdown');
+    if (!dropdown) return;
+
+    // Тек қана hidden класын ауыстырамыз, позицияны CSS реттейді
+    dropdown.classList.toggle('hidden');
+
+    if (!dropdown.classList.contains('hidden')) {
+        const dot = document.getElementById('notify-dot');
+        if (dot) dot.classList.add('hidden');
+        renderNotifyContent('all');
+    }
+}
+
+// 2. Хабарламаларды және категорияларды шығару
+function renderNotifyContent(activeTab) {
+    const listContainer = document.getElementById('notify-list');
+    const tabsContainer = document.getElementById('notify-tabs');
+    if (!listContainer || !tabsContainer) return;
+
+    // 1. Хабарламаларды алу
+    let list = JSON.parse(localStorage.getItem('qulanshop_notifications')) || [];
+
+    // --- ҚАТЕЛІКТЕРДІ ЖОЮ: undefined және бос объектілерді сүзгіден өткізу ---
+    // Бұл код тізімдегі бүлінген деректерді өшіреді
+    list = list.filter(n => n && n.message && n.message !== "undefined");
+
+    // 2. Категорияларды жинау
+    const categories = ['all', ...new Set(list.map(n => n.category))];
+    
+    // 3. Табтарды шығару
+    tabsContainer.innerHTML = categories.map(cat => {
+        const count = cat === 'all' ? list.length : list.filter(n => n.category === cat).length;
+        const label = cat === 'all' ? 'Все' : cat; 
+        return `<span onclick="event.stopPropagation(); renderNotifyContent('${cat}')" 
+                class="notify-tab ${activeTab === cat ? 'active' : ''}">${label} (${count})</span>`;
+    }).join('');
+
+    // 4. Тізімді фильтрлеу
+    const filtered = activeTab === 'all' ? list : list.filter(n => n.category === activeTab);
+
+    if (filtered.length === 0) {
+        listContainer.innerHTML = `<div class="py-12 text-center text-gray-300 italic text-[10px] font-bold uppercase tracking-widest">Уведомлений нет</div>`;
+        return;
+    }
+
+    // 5. Хабарламаларды экранға шығару
+    listContainer.innerHTML = filtered.reverse().map(n => `
+        <div onclick="handleNotifyClick('${n.link}')" class="notify-card group" style="margin-bottom: 8px;">
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-[9px] font-black text-orange-600 uppercase italic tracking-widest">${n.category || 'Общее'}</span>
+                <span class="text-[8px] text-gray-300 font-bold">${n.time || ''}</span>
+            </div>
+            <p class="text-[12px] font-bold text-slate-700 leading-normal italic pr-4" style="text-transform: none !important;">
+                ${n.message}
+            </p>
+        </div>
+    `).join('');
+}
+// 3. Хабарламаға басқанда сілтемеге лақтыру (Redirect)
+function handleNotifyClick(link) {
+    if (link && link !== '#') {
+        window.location.href = link;
+    }
+}
+
+// 4. Терезеден тыс жерді басқанда жабылуы үшін
+window.addEventListener('click', (e) => {
+    const dropdown = document.getElementById('notify-dropdown');
+    const wrapper = document.getElementById('notify-wrapper');
+    if (dropdown && !dropdown.classList.contains('hidden') && !wrapper.contains(e.target)) {
+        dropdown.classList.add('hidden');
+    }
+});
+
+window.addEventListener('storage', (e) => {
+    // Сигналдың бар екенін және ол бос емес екенін тексереміз
+    if (e.key === 'global_push_signal' && e.newValue && e.newValue !== "null") {
+        const data = JSON.parse(e.newValue);
+        
+        // Хабарламаны өшіру (синхронизация) сигналы болса
+        if (data.action === 'sync_list') {
+            localStorage.setItem('qulanshop_notifications', JSON.stringify(data.newList));
+            if (typeof renderNotifyContent === 'function') renderNotifyContent('all');
+            return;
+        }
+
+        // Жаңа хабарлама қосу
+        if (localStorage.getItem('isLoggedIn') === 'true' && data.message) {
+            let list = JSON.parse(localStorage.getItem('qulanshop_notifications')) || [];
+            
+            // Қайталанбау үшін ID арқылы тексереміз
+            if (!list.find(n => n.id === data.id)) {
+                list.push(data);
+                localStorage.setItem('qulanshop_notifications', JSON.stringify(list));
+                
+                // Хабарлама келгенін білдіретін нүктені жағу
+                const dot = document.getElementById('notify-dot');
+                if (dot) dot.classList.remove('hidden');
+                
+                if (typeof showMobileStyledPush === 'function') {
+                    showMobileStyledPush(data.message);
+                }
+            }
+        }
+        
+        // 🔥 ӨЗІНЕН-ӨЗІ ЖІБЕРУДІ ТОҚТАТАТЫН ЕҢ МАҢЫЗДЫ ЖОЛ:
+        // Сигналды өңдеп болған соң, оны бірден тазалаймыз
+        localStorage.setItem('global_push_signal', "null");
+    }
+});
+
+function renderVillageNews() {
+    const container = document.getElementById('village-news-list');
+    // LocalStorage-тан жаңалықтарды алу (егер жоқ болса, бос массив)
+    const news = JSON.parse(localStorage.getItem('village_news')) || [];
+
+    if (news.length === 0) {
+        container.innerHTML = `
+            <div class="min-w-full p-10 text-center border-2 border-dashed border-slate-800 rounded-[2rem]">
+                <p class="text-slate-600 italic font-bold uppercase text-[10px]">Қазірше жаңалықтар жоқ...</p>
+            </div>`;
+        return;
+    }
+
+    container.innerHTML = news.map(item => `
+        <div class="min-w-[280px] bg-slate-800/80 p-6 rounded-[2rem] border border-slate-700 shadow-xl backdrop-blur-md">
+            <div class="flex items-center gap-2 mb-3">
+                <span class="bg-orange-600/20 text-orange-500 text-[8px] font-black px-2 py-1 rounded-lg uppercase italic">
+                    ${item.category}
+                </span>
+                <span class="text-[8px] text-slate-500 font-bold">${item.date}</span>
+            </div>
+            <p class="text-sm font-bold text-white leading-relaxed italic pr-2">
+                "${item.text}"
+            </p>
+            <div class="mt-4 flex items-center gap-2">
+                <div class="w-6 h-6 bg-slate-700 rounded-full flex items-center justify-center">
+                    <i class="fas fa-bullhorn text-[10px] text-orange-500"></i>
+                </div>
+                <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">QulanShop Хабарлайды</span>
+            </div>
+        </div>
+    `).reverse().join(''); // Жаңаларын алдына шығару
+}
+
+// Бет жүктелгенде іске қосу
+document.addEventListener('DOMContentLoaded', renderVillageNews);
 
 
+function checkAuth(targetUrl) {
+    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    
+    if (isLoggedIn) {
+        // Егер логин жасалған болса, бірден сол бетке жібереміз
+        window.location.href = targetUrl;
+    } else {
+        // Егер тіркелмеген болса, SweetAlert арқылы ескерту шығарамыз
+        Swal.fire({
+            title: 'Кіру қажет',
+            text: 'Бұл бөлімді көру үшін алдымен тіркелуіңіз керек!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ea580c',
+            cancelButtonColor: '#1e293b',
+            confirmButtonText: 'Кіру / Тіркелу',
+            cancelButtonText: 'Болдырмау',
+            background: '#ffffff',
+            borderRadius: '2rem'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = 'login.html'; // Тіркелу бетіне жіберу
+            }
+        });
+    }
+}
 
 </script>
 
@@ -1142,10 +1521,7 @@ function filterByCategory(categoryName) {
 <script src="./auth-guard.js"></script>
 
 
-<div id="image-viewer-modal" class="hidden fixed inset-0 bg-black/95 backdrop-blur-xl z-[3000] flex items-center justify-center p-4 md:p-10" onclick="closeImageViewer()">
-    <button class="absolute top-6 right-6 text-white/50 hover:text-white text-4xl transition-all">&times;</button>
-    <img id="full-res-image" src="" class="max-w-full max-h-full rounded-2xl shadow-2xl transform transition-transform duration-300 scale-95" onclick="event.stopPropagation()">
-</div>
+
 
 </body>
 
