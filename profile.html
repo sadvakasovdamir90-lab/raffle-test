@@ -1093,18 +1093,51 @@ function updateOnlineStatus() {
         document.body.style.overflow = 'auto';
     }
 }
+// 1. ИНТЕРНЕТ СТАТУСЫН ЖӘНЕ ЛОАДЕРДІ БАСҚАРУ (Сенің кодың)
 window.addEventListener('online', updateOnlineStatus);
 window.addEventListener('offline', updateOnlineStatus);
 window.addEventListener('DOMContentLoaded', updateOnlineStatus);
+
+// Функция для статуса сети и удаления лоадера
 window.addEventListener('load', () => {
     const loader = document.getElementById('global-loader');
     if (loader) {
-        loader.classList.add('opacity-0'); // Әдемі жоғалу эффекті
+        // Гарантированно скрываем лоадер через 1 секунду, даже если есть ошибки
         setTimeout(() => {
-            loader.style.display = 'none';
-        }, 500); // 0.5 секундтан кейін толық өшеді
+            loader.style.opacity = '0';
+            setTimeout(() => { loader.style.display = 'none'; }, 500);
+        }, 1000);
     }
 });
+
+let isEditMode = false;
+
+function toggleEditMode() {
+    const btn = document.getElementById('edit-profile-btn');
+    const cameraIcon = document.getElementById('camera-icon'); // Определяем переменную здесь
+    const inputs = ['user-phone-input', 'user-email-input', 'user-address-input'];
+
+    if (!isEditMode) {
+        isEditMode = true;
+        inputs.forEach(id => {
+            const el = document.getElementById(id);
+            if(el) el.disabled = false;
+        });
+        if (cameraIcon) cameraIcon.classList.remove('hidden'); 
+        btn.innerText = "Сохранить изменения";
+        btn.style.backgroundColor = "#16a34a"; 
+    } else {
+        inputs.forEach(id => {
+            const el = document.getElementById(id);
+            if(el) el.disabled = true;
+        });
+        if (cameraIcon) cameraIcon.classList.add('hidden'); 
+        if (typeof saveProfileChanges === 'function') saveProfileChanges(); 
+        btn.innerText = "Редактировать профиль";
+        btn.style.backgroundColor = ""; 
+        isEditMode = false;
+    }
+}
 </script>
 
 <script>
@@ -2000,38 +2033,8 @@ function updateNavBalance() {
 }
 
 // 1. Беттің басында осы айнымалының барына көз жеткіз
-let isEditMode = false; 
+// isEditMode айнымалысы функцияның сыртында, жоғарыда анықталуы керек
 
-function toggleEditMode() {
-    const btn = document.getElementById('edit-profile-btn');
-    const cameraIcon = document.getElementById('camera-icon'); // Камера белгісі
-    const inputs = ['user-phone-input', 'user-email-input', 'user-address-input'];
-
-    if (!isEditMode) {
-        // РЕДАКТОРЛАУДЫ ҚОСУ
-        isEditMode = true;
-        inputs.forEach(id => {
-            const el = document.getElementById(id);
-            if(el) el.disabled = false;
-        });
-        
-        // КАМЕРАНЫ КӨРСЕТУ
-        if (cameraIcon) cameraIcon.classList.remove('hidden'); 
-        
-        btn.innerText = "Сохранить изменения";
-        btn.style.backgroundColor = "#16a34a"; // Жасыл түс
-    } else {
-        // САҚТАУ БАСЫЛҒАНДА КАМЕРАНЫ ҚАЙТА ЖАСЫРУ
-        if (cameraIcon) cameraIcon.classList.add('hidden'); 
-        saveProfileChanges(); // Сақтау функциясын шақыру
-    }
-}
-
-        // ФОТОАППАРАТ БЕЛГІСІН ҚАЙТА ЖАСЫРУ
-        if (cameraIcon) {
-            cameraIcon.classList.add('hidden'); // Қайтадан "hidden" қосамыз
-        }
-    
 
 function saveProfileChanges() {
     const currentId = localStorage.getItem('currentUserId');

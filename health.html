@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Здоровье | QulanMedia</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,600;0,700;0,800;1,800&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f0f4f8; -webkit-tap-highlight-color: transparent; }
+        .dark body { background-color: #020617; }
+        .medical-card { background: #ffffff; border-radius: 2.5rem; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); border: 1px solid rgba(226, 232, 240, 0.8); }
+        .dark .medical-card { background: #0f172a; border-color: rgba(30, 41, 59, 0.5); }
+        .pulse-red { animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { transform: scale(0.95); opacity: 0.5; } 70% { transform: scale(1.1); opacity: 0.1; } 100% { transform: scale(0.95); opacity: 0.5; } }
+    </style>
+</head>
+<body class="selection:bg-red-100 selection:text-red-600">
+
+    <header class="sticky top-0 z-[1000] bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl border-b border-slate-200/60 dark:border-slate-800/50 px-6 py-5">
+        <div class="max-w-5xl mx-auto flex items-center justify-between">
+            <a href="news.html" class="w-11 h-11 rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-900 dark:text-white active:scale-90 transition-all border border-slate-100 dark:border-slate-700">
+                <i class="fas fa-chevron-left text-xs"></i>
+            </a>
+            <div class="text-center">
+                <h1 class="text-[10px] font-black uppercase tracking-[0.4em] text-red-500 leading-none">Медпункт</h1>
+                <p class="text-[8px] font-bold text-slate-400 mt-1.5 uppercase tracking-widest italic leading-none">Куланөтпес</p>
+            </div>
+            <div class="w-11 h-11 rounded-2xl bg-red-50 dark:bg-red-900/20 flex items-center justify-center text-red-500">
+                <i class="fas fa-heartbeat text-sm animate-pulse"></i>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-6 py-10 pb-32">
+
+        <div class="medical-card p-8 mb-10 border-l-8 border-l-red-500 shadow-xl shadow-red-500/5">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-xs font-black uppercase italic tracking-widest text-slate-400">Статус очереди</h2>
+                <span class="flex items-center gap-2">
+                    <span class="relative flex h-2 w-2">
+                        <span class="pulse-red absolute inline-flex h-full w-full rounded-full bg-red-400"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                    </span>
+                    <span class="text-[9px] font-black text-red-500 uppercase italic">Live</span>
+                </span>
+            </div>
+            <div class="grid grid-cols-2 gap-6">
+                <div class="text-center p-4 bg-slate-50 dark:bg-slate-800/50 rounded-3xl">
+                    <p class="text-3xl font-[900] italic text-slate-900 dark:text-white mb-1">04</p>
+                    <p class="text-[8px] font-black text-slate-400 uppercase tracking-tighter">В очереди</p>
+                </div>
+                <div class="text-center p-4 bg-red-50 dark:bg-red-900/10 rounded-3xl">
+                    <p class="text-3xl font-[900] italic text-red-500 mb-1">~15</p>
+                    <p class="text-[8px] font-black text-red-400 uppercase tracking-tighter">Мин. ожидания</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-10">
+            <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] italic mb-6 ml-2">Прием врачей</h3>
+            <div class="space-y-4">
+                <div class="medical-card p-6 flex items-center justify-between hover:border-red-500/30 transition-all">
+                    <div class="flex items-center gap-5">
+                        <div class="w-14 h-14 rounded-3xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-500 text-xl border border-blue-100 dark:border-blue-800">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-black text-slate-900 dark:text-white uppercase italic">Терапевт</h4>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase mt-1">Иванова А. Б. • Каб. 1</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-[10px] font-black text-blue-600 uppercase italic">09:00 - 13:00</p>
+                        <p class="text-[8px] text-slate-300 uppercase font-bold mt-1 italic">Ежедневно</p>
+                    </div>
+                </div>
+                <div class="medical-card p-6 flex items-center justify-between hover:border-red-500/30 transition-all opacity-60">
+                    <div class="flex items-center gap-5">
+                        <div class="w-14 h-14 rounded-3xl bg-slate-50 dark:bg-slate-800/50 flex items-center justify-center text-slate-400 text-xl border border-slate-100 dark:border-slate-800">
+                            <i class="fas fa-stethoscope"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-black text-slate-900 dark:text-white uppercase italic">Педиатр</h4>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase mt-1">Смайлов К. С. • Каб. 3</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-[10px] font-black text-slate-400 uppercase italic">Завершено</p>
+                        <p class="text-[8px] text-slate-300 uppercase font-bold mt-1 italic">До завтра</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="medical-card p-8 bg-gradient-to-br from-emerald-500 to-emerald-600 border-none text-white overflow-hidden relative">
+            <div class="relative z-10">
+                <h3 class="text-xs font-black uppercase tracking-widest italic mb-6 opacity-80">Наличие лекарств</h3>
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] font-bold italic uppercase">Жаропонижающие</span>
+                        <span class="text-[10px] font-black bg-white/20 px-3 py-1 rounded-full uppercase">В наличии</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] font-bold italic uppercase">Антибиотики</span>
+                        <span class="text-[10px] font-black bg-white/20 px-3 py-1 rounded-full uppercase">Остаток: Мало</span>
+                    </div>
+                </div>
+                <button onclick="window.open('tel:103')" class="w-full mt-8 py-4 bg-white text-emerald-600 rounded-2xl font-black uppercase italic text-[10px] tracking-widest active:scale-95 transition-all">
+                    Позвонить в регистратуру
+                </button>
+            </div>
+            <i class="fas fa-pills absolute -right-10 -bottom-10 text-9xl text-white/10 -rotate-12"></i>
+        </div>
+
+    </main>
+
+    <script>
+        if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');
+    </script>
+</body>
+</html>
