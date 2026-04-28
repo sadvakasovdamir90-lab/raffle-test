@@ -357,12 +357,12 @@
         </button>
 
 <div id="notify-wrapper" class="hidden relative">
-    <button onclick="toggleNotifyMenu()" class="flex flex-col items-center outline-none group">
+    <button onclick="toggleNotifyMenu()" class="flex flex-col items-center hover:text-orange-600 transition text-gray-600">
         <div class="relative">
             <i class="far fa-bell text-xl md:text-2xl text-gray-600"></i>
             <div id="notify-dot" class="hidden absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-red-600 rounded-full border-2 border-white animate-pulse"></div>
         </div>
-        <span class="text-[10px] md:text-[11px] mt-1 font-bold italic text-gray-600">Уведомления</span>
+        <span class="text-[9px] md:text-[10px] mt-1 font-medium italic">Уведомления</span>
     </button>
 
     <div id="notify-dropdown" class="hidden notify-dropdown-top">
@@ -455,6 +455,48 @@
         </div>
     </div>
 </section>
+
+<section class="container mx-auto px-4 mt-6">
+    <div class="flex flex-wrap gap-3 md:gap-4 justify-start">
+        
+        <div id="games-button" onclick="location.href='games.html'" style="display: none;" class="w-20 h-20 md:w-24 md:h-24 bg-white rounded-[1.5rem] md:rounded-[2rem] shadow-sm border border-orange-50 flex flex-col items-center justify-center cursor-pointer hover:shadow-md transition-all active:scale-90 relative overflow-hidden">
+            <div class="w-8 h-8 md:w-10 md:h-10 bg-orange-600 text-white rounded-xl flex items-center justify-center text-base md:text-lg mb-1 md:mb-1.5 shadow-lg shadow-orange-200">
+                <i class="fas fa-gamepad"></i>
+            </div>
+            <span class="text-[9px] md:text-[10px] font-[900] uppercase italic tracking-tighter text-slate-800">Игры</span>
+        </div>
+
+        <div onclick="document.getElementById('btn-filter-discount').click()" class="w-20 h-20 md:w-24 md:h-24 bg-white rounded-[1.5rem] md:rounded-[2rem] shadow-sm border border-red-50 flex flex-col items-center justify-center cursor-pointer hover:shadow-md transition-all active:scale-90 relative overflow-hidden">
+            <div class="w-8 h-8 md:w-10 md:h-10 bg-red-100 text-red-500 rounded-xl flex items-center justify-center text-base md:text-lg mb-1 md:mb-1.5">
+                <i class="fas fa-fire"></i>
+            </div>
+            <span class="text-[9px] md:text-[10px] font-[900] uppercase italic tracking-tighter text-slate-800">Акции</span>
+        </div>
+
+        <div onclick="location.href='news.html'" class="w-20 h-20 md:w-24 md:h-24 bg-white rounded-[1.5rem] md:rounded-[2rem] shadow-sm border border-blue-50 flex flex-col items-center justify-center cursor-pointer hover:shadow-md transition-all active:scale-90 relative overflow-hidden">
+            <div class="w-8 h-8 md:w-10 md:h-10 bg-blue-100 text-blue-500 rounded-xl flex items-center justify-center text-base md:text-lg mb-1 md:mb-1.5">
+                <i class="far fa-newspaper"></i>
+            </div>
+            <span class="text-[9px] md:text-[10px] font-[900] uppercase italic tracking-tighter text-slate-800">Новости</span>
+        </div>
+
+        <div onclick="location.href='gift-cards.html'" class="w-20 h-20 md:w-24 md:h-24 bg-white rounded-[1.5rem] md:rounded-[2rem] shadow-sm border border-green-50 flex flex-col items-center justify-center cursor-pointer hover:shadow-md transition-all active:scale-90 relative overflow-hidden">
+            <div class="w-8 h-8 md:w-10 md:h-10 bg-green-100 text-green-500 rounded-xl flex items-center justify-center text-base md:text-lg mb-1 md:mb-1.5">
+                <i class="fas fa-gift"></i>
+            </div>
+            <span class="text-[9px] md:text-[10px] font-[900] uppercase italic tracking-tighter text-slate-800">Подарки</span>
+        </div>
+
+        <div onclick="toggleAIChat()" class="w-20 h-20 md:w-24 md:h-24 bg-white rounded-[1.5rem] md:rounded-[2rem] shadow-sm border border-purple-50 flex flex-col items-center justify-center cursor-pointer hover:shadow-md transition-all active:scale-90 relative overflow-hidden">
+            <div class="w-8 h-8 md:w-10 md:h-10 bg-purple-100 text-purple-500 rounded-xl flex items-center justify-center text-base md:text-lg mb-1 md:mb-1.5">
+                <i class="fas fa-robot"></i>
+            </div>
+            <span class="text-[9px] md:text-[10px] font-[900] uppercase italic tracking-tighter text-slate-800">AI Чат</span>
+        </div>
+
+    </div>
+</section>
+
 
 
  <section class="container mx-auto px-4 mt-12 mb-20 relative">
@@ -661,6 +703,7 @@
                     <li><a href="about.html" class="footer-link hover:text-orange-600 transition-all">О нас</a></li>
                     <li><a href="contacts.html" class="footer-link hover:text-orange-600 transition-all">Контакты</a></li>
                     <li><a href="address.html" class="footer-link hover:text-orange-600 transition-all">Адрес магазина</a></li>
+                    <li><a href="privacy.html" class="footer-link hover:text-orange-600 transition-all">Политика конфиденциальности</a></li>
                 </ul>
             </div>
 
@@ -1111,7 +1154,7 @@ function searchProducts(query) {
         loadSiteBanners();
         startGlobalTimer();
         updatePrivateUI();
-        updateNavBalance();
+        checkGamesAccess()
     };
 
     // Батырмалардың активті күйін басқару
@@ -1329,6 +1372,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const list = JSON.parse(localStorage.getItem('qulanshop_notifications')) || [];
         if (list.length > 0) document.getElementById('notify-dot')?.classList.remove('hidden');
     }
+    
 });
 
 // --- УВЕДОМЛЕНИЯ ЛОГИКАСЫ ---
@@ -1481,33 +1525,30 @@ function renderVillageNews() {
 }
 
 // Бет жүктелгенде іске қосу
-document.addEventListener('DOMContentLoaded', renderVillageNews);
-
-
-function checkAuth(targetUrl) {
-    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+// Бет жүктелгенде іске қосылатын негізгі оқиға
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Ауыл жаңалықтарын шығару
+    if (typeof renderVillageNews === 'function') {
+        renderVillageNews();
+    }
     
-    if (isLoggedIn) {
-        // Егер логин жасалған болса, бірден сол бетке жібереміз
-        window.location.href = targetUrl;
-    } else {
-        // Егер тіркелмеген болса, SweetAlert арқылы ескерту шығарамыз
-        Swal.fire({
-            title: 'Кіру қажет',
-            text: 'Бұл бөлімді көру үшін алдымен тіркелуіңіз керек!',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#ea580c',
-            cancelButtonColor: '#1e293b',
-            confirmButtonText: 'Кіру / Тіркелу',
-            cancelButtonText: 'Болдырмау',
-            background: '#ffffff',
-            borderRadius: '2rem'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                window.location.href = 'login.html'; // Тіркелу бетіне жіберу
-            }
-        });
+    // 2. Ойындар батырмасының көріну/көрінбеуін тексеру
+    checkGamesAccess(); 
+});
+
+// Батырманы көрсету логикасы (Бір-ақ рет жазылды)
+function checkGamesAccess() {
+    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    const gamesBtn = document.getElementById('games-button');
+
+    if (gamesBtn) {
+        if (isLoggedIn) {
+            gamesBtn.style.setProperty('display', 'flex', 'important');
+            console.log("🎮 Ойындар батырмасы белсенді");
+        } else {
+            gamesBtn.style.setProperty('display', 'none', 'important');
+            console.log("🔒 Ойындар жасырылды (Тіркелмеген)");
+        }
     }
 }
 
@@ -1522,7 +1563,6 @@ function checkAuth(targetUrl) {
 
 
 
-
+<script src="themes.js"></script>
 </body>
-
 </html>

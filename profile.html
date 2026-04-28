@@ -1093,51 +1093,18 @@ function updateOnlineStatus() {
         document.body.style.overflow = 'auto';
     }
 }
-// 1. ИНТЕРНЕТ СТАТУСЫН ЖӘНЕ ЛОАДЕРДІ БАСҚАРУ (Сенің кодың)
 window.addEventListener('online', updateOnlineStatus);
 window.addEventListener('offline', updateOnlineStatus);
 window.addEventListener('DOMContentLoaded', updateOnlineStatus);
-
-// Функция для статуса сети и удаления лоадера
 window.addEventListener('load', () => {
     const loader = document.getElementById('global-loader');
     if (loader) {
-        // Гарантированно скрываем лоадер через 1 секунду, даже если есть ошибки
+        loader.classList.add('opacity-0'); // Әдемі жоғалу эффекті
         setTimeout(() => {
-            loader.style.opacity = '0';
-            setTimeout(() => { loader.style.display = 'none'; }, 500);
-        }, 1000);
+            loader.style.display = 'none';
+        }, 500); // 0.5 секундтан кейін толық өшеді
     }
 });
-
-let isEditMode = false;
-
-function toggleEditMode() {
-    const btn = document.getElementById('edit-profile-btn');
-    const cameraIcon = document.getElementById('camera-icon'); // Определяем переменную здесь
-    const inputs = ['user-phone-input', 'user-email-input', 'user-address-input'];
-
-    if (!isEditMode) {
-        isEditMode = true;
-        inputs.forEach(id => {
-            const el = document.getElementById(id);
-            if(el) el.disabled = false;
-        });
-        if (cameraIcon) cameraIcon.classList.remove('hidden'); 
-        btn.innerText = "Сохранить изменения";
-        btn.style.backgroundColor = "#16a34a"; 
-    } else {
-        inputs.forEach(id => {
-            const el = document.getElementById(id);
-            if(el) el.disabled = true;
-        });
-        if (cameraIcon) cameraIcon.classList.add('hidden'); 
-        if (typeof saveProfileChanges === 'function') saveProfileChanges(); 
-        btn.innerText = "Редактировать профиль";
-        btn.style.backgroundColor = ""; 
-        isEditMode = false;
-    }
-}
 </script>
 
 <script>
@@ -2033,42 +2000,89 @@ function updateNavBalance() {
 }
 
 // 1. Беттің басында осы айнымалының барына көз жеткіз
-// isEditMode айнымалысы функцияның сыртында, жоғарыда анықталуы керек
+let isEditMode = false; 
 
+function toggleEditMode() {
+    const btn = document.getElementById('edit-profile-btn');
+    // HTML-де id="camera-icon" деп жазылған, соны дұрыс тауып аламыз
+    const cameraIcon = document.getElementById('camera-icon'); 
+    const inputs = ['user-phone-input', 'user-email-input', 'user-address-input'];
+
+    if (!isEditMode) {
+        isEditMode = true;
+        inputs.forEach(id => {
+            const el = document.getElementById(id);
+            if(el) el.disabled = false;
+        });
+        
+        // Камера белгісін көрсету
+        if (cameraIcon) cameraIcon.classList.remove('hidden'); 
+        
+        btn.innerText = "Сохранить изменения";
+        btn.style.backgroundColor = "#16a34a"; 
+    } else {
+        // Сақтау басылғанда камераны қайта жасыру
+        if (cameraIcon) cameraIcon.classList.add('hidden'); 
+        saveProfileChanges(); 
+    }
+}
+
+        // ФОТОАППАРАТ БЕЛГІСІН ҚАЙТА ЖАСЫРУ
+        if (cameraIcon) {
+            cameraIcon.classList.add('hidden'); // Қайтадан "hidden" қосамыз
+        }
+    
 
 function saveProfileChanges() {
     const currentId = localStorage.getItem('currentUserId');
-    const currentUser = JSON.parse(localStorage.getItem('currentUser')); // Сессиядан жаңарған фотоны аламыз
     let users = JSON.parse(localStorage.getItem('users')) || [];
     
-    const userIndex = users.findIndex(u => String(u.id) === String(currentId));
+    const phoneInput = document.getElementById('user-phone-input').value.trim();
+    const emailInput = document.getElementById('user-email-input').value.trim();
+    const addressInput = document.getElementById('user-address-input').value.trim();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const phone = document.getElementById('user-phone-input').value;
-    const email = document.getElementById('user-email-input').value;
 
-if (phone.length < 10) return Swal.fire('Қате', 'Телефон нөмірін толық жазыңыз', 'error');
-if (!emailRegex.test(email)) return Swal.fire('Қате', 'Email форматы қате', 'error');
+    // 1. АНОНИМНАЯ ПРОВЕРКА: Занят ли номер другим пользователем?
+    const isPhoneTaken = users.some(u => u.phone === phoneInput && String(u.id) !== String(currentId));
+
+    if (isPhoneTaken) {
+        return Swal.fire({
+            icon: 'error',
+            title: 'Номер занят',
+            text: 'Данный номер телефона уже зарегистрирован в системе. Пожалуйста, укажите другой номер.',
+            confirmButtonColor: '#ea580c',
+            customClass: { popup: 'rounded-[2rem]' }
+        });
+    }
+
+    // 2. ПРОВЕРКА ФОРМАТОВ
+    if (phoneInput.length < 10) {
+        return Swal.fire('Ошибка', 'Введите полный номер телефона', 'error');
+    }
+    if (!emailRegex.test(emailInput)) {
+        return Swal.fire('Ошибка', 'Некорректный формат Email', 'error');
+    }
+
+    // 3. ЛОГИКА СОХРАНЕНИЯ
+    const userIndex = users.findIndex(u => String(u.id) === String(currentId));
 
     if (userIndex !== -1) {
-        // 1. Мәтіндік деректерді алу
-        users[userIndex].phone = document.getElementById('user-phone-input').value;
-        users[userIndex].email = document.getElementById('user-email-input').value;
-        users[userIndex].address = document.getElementById('user-address-input').value;
+        users[userIndex].phone = phoneInput;
+        users[userIndex].email = emailInput;
+        users[userIndex].address = addressInput;
 
-        // 2. ФОТОНЫ САҚТАУ (Егер жаңа фото жүктелген болса)
-        if (currentUser && currentUser.photo) {
-            users[userIndex].photo = currentUser.photo;
-        }
-
-        // 3. LocalStorage-ты түгел жаңарту
+        // Обновление сессии пользователя
         localStorage.setItem('users', JSON.stringify(users));
         localStorage.setItem('currentUser', JSON.stringify(users[userIndex]));
 
-        // 4. Интерфейсті жабу
+        // Возврат интерфейса в режим чтения
         isEditMode = false;
         document.getElementById('user-phone-input').disabled = true;
         document.getElementById('user-email-input').disabled = true;
         document.getElementById('user-address-input').disabled = true;
+        
+        const cameraIcon = document.getElementById('camera-icon');
+        if (cameraIcon) cameraIcon.classList.add('hidden');
 
         const btn = document.getElementById('edit-profile-btn');
         btn.innerText = "Изменить данные";
@@ -2076,14 +2090,14 @@ if (!emailRegex.test(email)) return Swal.fire('Қате', 'Email форматы 
 
         Swal.fire({
             icon: 'success',
-            title: 'Успешно!',
-            text: 'Данные и фото сохранены',
+            title: 'Сохранено',
+            text: 'Ваши данные успешно обновлены ✅',
             timer: 2000,
             showConfirmButton: false,
             customClass: { popup: 'rounded-[2rem]' }
         });
         
-        loadUserData(); // Бетті жаңартып жіберу
+        loadUserData(); 
     }
 }
 
@@ -2581,6 +2595,24 @@ function initPeer() {
             });
         }
     });
+}
+
+// Профиль беті ашылғанда балансты жаңарту
+document.addEventListener('DOMContentLoaded', () => {
+    syncProfileBalance();
+});
+
+function syncProfileBalance() {
+    // 1. LocalStorage-тан ұпайды аламыз (жоқ болса 0)
+    const currentBalance = localStorage.getItem('qulan_balance') || '0';
+    
+    // 2. Сенің кодындағы нақты ID-ді тауып аламыз
+    const balanceDisplay = document.getElementById('wallet-bonuses');
+    
+    // 3. Форматты бұзбай (мысалы 20 емес, 20.00 етіп) жазамыз
+    if (balanceDisplay) {
+        balanceDisplay.innerText = Number(currentBalance).toFixed(2);
+    }
 }
 
     </script>
