@@ -445,21 +445,29 @@ function gameOverFlappy() {
         flappyHighScore.innerText = bestScore;
     }
 
-    // НАҒЫЗ Q-COINS БАЛАНСЫН ТОЛТЫРУ 💰
+    // 💰 БОНУСТЫ ҚАТЫРМАЙ, ҮСТІНЕ ҚОСУ ЛОГИКАСЫ:
     if(score > 0) {
-        const activeUser = localStorage.getItem('userPhone');
-        if(activeUser) {
-            const balanceKey = 'qulan_balance_' + activeUser;
-            let currentBal = parseFloat(localStorage.getItem(balanceKey) || '0');
-            currentBal += score; // Қанша құбырдан өтсе, сонша теңге қосылады!
-            localStorage.setItem(balanceKey, currentBal);
+        // 1. Базадан барлық қолданушыларды және қазіргі ID-ді аламыз
+        const currentId = localStorage.getItem('currentUserId');
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+        let userIdx = users.findIndex(u => String(u.id) === String(currentId));
+
+        if (userIdx !== -1) {
+            // 2. ЕСКІ БОНУСТЫ АЛЫП, ЖАҢА ҰПАЙДЫ ҮСТІНЕ ҚОСАМЫЗ (+=)
+            let currentBonus = Number(users[userIdx].bonus) || 0;
+            users[userIdx].bonus = currentBonus + score; 
+
+            // 3. БАРЛЫҚ ЖЕРДЕ ЖАҢАРТУ (Базада және Сессияда)
+            localStorage.setItem('users', JSON.stringify(users));
+            localStorage.setItem('currentUser', JSON.stringify(users[userIdx]));
             
-            // Жоғарыдағы балансты жаңарту
+            // 4. ЭКРАНДАҒЫ САНДЫ (оң жақ жоғарыдағы) БІРДЕН ЖАҢАРТУ
             const balEl = document.getElementById('game-balance');
-            if(balEl) balEl.innerText = currentBal.toFixed(2);
+            if(balEl) {
+                balEl.innerText = users[userIdx].bonus.toFixed(2);
+            }
             
-            // Топ ойыншылар рейтингін сол сәтте жаңарту
-            if(typeof renderLeaderboard === 'function') renderLeaderboard();
+            console.log("Жаңа бонус қосылды! Жалпы:", users[userIdx].bonus);
         }
     }
 }
