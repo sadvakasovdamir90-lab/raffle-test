@@ -2603,17 +2603,24 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function syncProfileBalance() {
-    // 1. LocalStorage-тан ұпайды аламыз (жоқ болса 0)
-    const currentBalance = localStorage.getItem('qulan_balance') || '0';
-    
-    // 2. Сенің кодындағы нақты ID-ді тауып аламыз
-    const balanceDisplay = document.getElementById('wallet-bonuses');
-    
-    // 3. Форматты бұзбай (мысалы 20 емес, 20.00 етіп) жазамыз
-    if (balanceDisplay) {
-        balanceDisplay.innerText = Number(currentBalance).toFixed(2);
+    const userJson = localStorage.getItem('currentUser');
+    if (userJson) {
+        const user = JSON.parse(userJson);
+        const bonuses = user.bonus || 0; // Нақты базадағы бонус
+        
+        // Картадағы Q-Coins блогы
+        const balanceDisplay = document.getElementById('wallet-bonuses');
+        if (balanceDisplay) {
+            balanceDisplay.innerText = Number(bonuses).toLocaleString();
+        }
+        
+        // Жоғарғы навигациядағы балансты да теңестіру
+        const navBal = document.getElementById('nav-balance');
+        if (navBal) navBal.innerText = Math.floor(bonuses) + ' ₸';
     }
 }
+
+
 
     </script>
 </html>
